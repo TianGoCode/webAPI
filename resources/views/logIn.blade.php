@@ -5,16 +5,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.1/uuid.min.js" integrity="sha512-4JH7nC4nSqPixxbhZCLETJ+DUfHa+Ggk90LETm25fi/SitneSvtxkcWAUujvYrgKgvrvwv4NDAsFgdwCS79Dcw==" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <script>
-        function genUuid(){
-            document.getElementById('qqq').value = uuid.v4();
-        }
+        // function genUuid(){
+        //     document.getElementById('qqq').value = uuid.v4();
+        // }
     </script>
 </head>
-<body onload="genUuid()">
+<!-- <body onload="genUuid()"> -->
 <div class="headerMenu">
     <div id="wrapper">
         <div class="logo">
-            <img src="./logo.png">
+        
         </div>
         <div class="searchbox">
             <form action="search" method="GET" id="search">
@@ -36,17 +36,17 @@
             <h2>Join us!</h2>
         </td>
         <td width="40%" valign="top">
-            <h2>đăng ký</h2>
-            <form action="/signin" method="post">
+            <h2>đăng nhập</h2>
+            <form action="/login" method="post">
                 @csrf
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">phone</label>
-                    <input type="text" name="phone" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <input type="text" name="phoneIn" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                 </div>
                 <div class="mb-3">
                     <label for="exampleInputPassword1" class="form-label">Password</label>
-                    <input type="password" name="pass" class="form-control" id="exampleInputPassword1">
+                    <input type="password" name="passIn" class="form-control" id="exampleInputPassword1">
                 </div>
                 <div class="mb-3">
 

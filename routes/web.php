@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Webpatser\Uuid\Uuid;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,7 +18,7 @@ use App\Models\User;
 |
 */
 
-Route::get('/', function () {
+Route::get('/wel', function () {
     return view('welcome');
 });
 //Route::get('/{name}', function ($name) {
@@ -26,15 +30,15 @@ Route::get('/home', function () {
     return view('home');
 });
 
-Route::get('/signin', function (){
-    return view('signIn');
+Route::get('/signup', function (){
+    return view('signUp');
 });
 
-Route::post('/signin',function(Request $request){
+Route::post('/signup',function(Request $request){
    $user = new User();
    $user->phone = $request->input('phone');
-   $user->pass = $request->input('pass');
-   $user->uuid = $request->input('uuid');
+   $user->pass = bcrypt($request->input('pass'));
+   $user->uuid = Uuid::generate()->string;
    
     $user->save();
 
@@ -66,3 +70,26 @@ Route::post('/signin',function(Request $request){
 //    ]);
 //});
 
+Route::get('/login',function() {
+    return view('logIn');
+});
+
+Route::post('/login', function(Request $request) {
+
+    $data = [
+            'phone'=> $request->phoneIn,
+            'pass' => $request->passIn
+    ];
+   
+    $request->validate([
+            'phoneIn' => 'required|min:4',
+            'passIn' => 'required'
+    ]);
+
+         if(Auth::attempt($data)){
+            dd('Đăng nhập thành công');
+        }
+         else {
+            dd('TK hoặc MK chưa đúng');
+        }
+});
