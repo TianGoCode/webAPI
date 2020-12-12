@@ -35,6 +35,8 @@ Route::get('/signup', function () {
 });
 
 Route::post('/signup', function (Request $request) {
+
+
     // lay ra thong tin request duoc gui len
     $user = new User();
     $user->phonenumber = $request->input('phone');
@@ -78,8 +80,8 @@ Route::post('/signup', function (Request $request) {
         ]);
     }
 
-    $user->save();
 
+    $user->save();
     return response()->json([
         "code" => 1000,
         "message" => "dang ky thanh cong",
@@ -95,19 +97,14 @@ Route::get('/login', function () {
 
 Route::post('/login', function (Request $request) {
 
-    $data = [
-        'phone' => $request->phoneIn,
-        'pass' => $request->passIn
-    ];
-
-    $request->validate([
-        'phoneIn' => 'required|min:4',
-        'passIn' => 'required'
+    return response()->json([
+        "code"=>1000,
+        "message"=>"ban da dang nhap thanh cong",
+        "data"=>[
+            "id"=>User::where('phonenumber',$request->input('phonenumber'))->first()->id,
+            "username"=>"chua co",
+            "token"=>"chua co",
+            "avatar"=>"chua co"
+        ]
     ]);
-
-    if (Auth::attempt($data)) {
-        dd('Đăng nhập thành công');
-    } else {
-        dd('TK hoặc MK chưa đúng');
-    }
 });
