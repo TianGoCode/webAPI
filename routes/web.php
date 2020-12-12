@@ -36,9 +36,15 @@ Route::get('/signup', function () {
 });
 
 Route::post('/signup', function (Request $request) {
+<<<<<<< HEAD
+  
+
+//    lay ra thong tin request duoc gui len
+=======
 
 
     // lay ra thong tin request duoc gui len
+>>>>>>> 7ea9bd76c9b2c1a7b2462865c32dec259ba495d8
     $user = new User();
     $user->phonenumber = $request->input('phone');
     $user->password = $request->input('pass');
@@ -46,12 +52,14 @@ Route::post('/signup', function (Request $request) {
 
     $duplicate = User::where('phonenumber', $user->phonenumber)->first();
 
+
+    
     if ($duplicate) {
 
         //kiem tra trung lap sdt
         return response()->json([
             "code" => 9996,
-            "message" => "sdt ban dang ky da trung",
+            "message" => "Người dùng đã tồn tại",
             "data" => $request->all()
         ]);
     }
