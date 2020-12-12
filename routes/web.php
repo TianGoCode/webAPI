@@ -40,7 +40,7 @@ Route::post('/signup', function (Request $request) {
     $user->phonenumber = $request->input('phone');
     $user->password = bcrypt($request->input('pass'));
 //    $user->uuid = $request->input('uuid');
-    
+
     $duplicate = User::where('phonenumber', $user->phonenumber)->first();
 
     if ($duplicate) {
@@ -73,7 +73,8 @@ Route::post('/signup', function (Request $request) {
         return response()->json([
             "code" => "error",
             "message" => "ban da nhap sodien thoai trung mat khau",
-            "data" => $request->all()
+            "data" => $request->all(),
+            "user" => $user
         ]);
     }
 
