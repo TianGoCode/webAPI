@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Webpatser\Uuid\Uuid;
+use Illuminate\Support\Facades\Hash;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +41,7 @@ Route::post('/signup', function (Request $request) {
     // lay ra thong tin request duoc gui len
     $user = new User();
     $user->phonenumber = $request->input('phone');
-    $user->password = bcrypt($request->input('pass'));
+    $user->password = $request->input('pass');
 //    $user->uuid = $request->input('uuid');
 
     $duplicate = User::where('phonenumber', $user->phonenumber)->first();
@@ -96,15 +97,80 @@ Route::get('/login', function () {
 });
 
 Route::post('/login', function (Request $request) {
+    $credentials = User::where('phonenumber', $request->input('phonenumber'))->first();
+    $phonenumber = $request->input('phonenumber');
+    $password = $request->input('password');
+    //1, kiem tra phonenumber
+    if ($phonenumber == null) {
+        return response()->json([
+            "code" => 9994,
+            "message" => "chua nhap sdt",
+            "data" => [
+                "id" => "no infomation",
+                "username" => "no infomation",
+                "token" => $request->input('token'),
+                "avatar" => "no infomation"
+            ],
 
-    return response()->json([
-        "code"=>1000,
-        "message"=>"ban da dang nhap thanh cong",
-        "data"=>[
-            "id"=>User::where('phonenumber',$request->input('phonenumber'))->first()->id,
-            "username"=>"chua co",
-            "token"=>"chua co",
-            "avatar"=>"chua co"
-        ]
-    ]);
+        ]);
+    }
+    //sai ding dang sdt: chua lam dc
+    //dung sdt
+    if ($credentials) {
+        //mat khau de trong
+        if ($request->input('password') == null) {
+            return response()->json([
+                "code" => 9994,
+                "message" => "chua nhap mat khau",
+                "data" => [
+                    "id" => "no infomation",
+                    "username" => "no infomation",
+                    "token" => $request->input('token'),
+                    "avatar" => "no infomation"
+                ],
+
+            ]);
+        } else if ($password != $credentials->password) {
+            //sai mat khau tai khoan
+            return response()->json([
+                "code" => 9994,
+                "message" => "nhap sai mat khau",
+                "data" => [
+                    "id" => "no infomation",
+                    "username" => $phonenumber,
+                    "token" => $request->input('token'),
+                    "avatar" => "no infomation"
+                ]
+
+            ]);
+        } else {
+            return response()->json([
+                "code" => 1000,
+                "message" => "ban da dang nhap thanh cong",
+                "data" => [
+                    "id" => $credentials->id,
+                    "username" => "chua co",
+                    "token" => "chua co",
+                    "avatar" => "chua co"
+                ],
+
+            ]);
+        }
+
+
+    } else {
+        return response()->json([
+            "code" => 9996,
+            "message" => "tai khoan khong ton tai",
+            "data" => [
+                "id" => "no infomation",
+                "username" => "chua co",
+                "token" => "chua co",
+                "avatar" => "chua co"
+            ],
+
+        ]);
+    }
+
+
 });

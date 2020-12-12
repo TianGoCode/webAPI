@@ -18,7 +18,7 @@ class CreatePostsTable extends Migration
             $table->unsignedBigInteger('author_id');
             $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('content',500);
-            $table->string('media');
+            $table->string('media')->nullable();
             $table->timestamps();
 
 //            theem bang nguoi dung - thich - bai viet
