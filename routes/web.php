@@ -69,6 +69,7 @@ Route::post('/signup', function (Request $request) {
     // $user->phonenumber = $request->input('phone');
     // $user->password = bcrypt($request->input('pass'));
 //    $user->uuid = $request->input('uuid');
+<<<<<<< HEAD
     
     // $duplicate = User::where('phonenumber', $user->phonenumber)->first();
 
@@ -113,6 +114,53 @@ Route::post('/signup', function (Request $request) {
     //     "message" => "dang ky thanh cong",
     //     "data" => $request->all()
     // ]);
+=======
+
+    $duplicate = User::where('phonenumber', $user->phonenumber)->first();
+
+    if ($duplicate) {
+
+        //kiem tra trung lap sdt
+        return response()->json([
+            "code" => 9996,
+            "message" => "sdt ban dang ky da trung",
+            "data" => $request->all()
+        ]);
+    }
+    if ($request->input('phone') == null) {
+        //neu chua nhap sdt
+        return response()->json([
+            "code" => "error",
+            "message" => "ban chua nhap so dien thoai",
+            "data" => $request->all()
+        ]);
+    }
+    if ($request->input('pass') == null) {
+        // neu chua nhap mk
+        return response()->json([
+            "code" => "error",
+            "message" => "ban chua nhap mat khau",
+            "data" => $request->all()
+        ]);
+    }
+    if ($request->input('phone') == $request->input('pass')) {
+        //neu mk trung sdt
+        return response()->json([
+            "code" => "error",
+            "message" => "ban da nhap sodien thoai trung mat khau",
+            "data" => $request->all(),
+            "user" => $user
+        ]);
+    }
+
+    $user->save();
+
+    return response()->json([
+        "code" => 1000,
+        "message" => "dang ky thanh cong",
+        "data" => $request->all()
+    ]);
+>>>>>>> 80ea4364a63bff1344a354938aeffc132256b8eb
 
 });
 
