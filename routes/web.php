@@ -19,32 +19,36 @@ use Illuminate\Support\Facades\Hash;
 |
 */
 
+function generateRandomString($length)
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
 Route::get('/wel', function () {
     return view('welcome');
-});
-//Route::get('/{name}', function ($name) {
-//    return $name;
-//});
-
-
-Route::get('/home', function () {
-    return view('home');
 });
 
 Route::get('/signup', function () {
     return view('signUp');
 });
+Route::get('/login', function () {
+    return view('logIn');
+});
+
+
+Route::get('/', function () {
+    return view('home');
+});
 
 Route::post('/signup', function (Request $request) {
-<<<<<<< HEAD
-  
-
-//    lay ra thong tin request duoc gui len
-=======
-
-
     // lay ra thong tin request duoc gui len
->>>>>>> 7ea9bd76c9b2c1a7b2462865c32dec259ba495d8
+
     $user = new User();
     $user->phonenumber = $request->input('phone');
     $user->password = $request->input('pass');
@@ -52,10 +56,7 @@ Route::post('/signup', function (Request $request) {
 
     $duplicate = User::where('phonenumber', $user->phonenumber)->first();
 
-
-    
     if ($duplicate) {
-
         //kiem tra trung lap sdt
         return response()->json([
             "code" => 9996,
@@ -89,22 +90,16 @@ Route::post('/signup', function (Request $request) {
         ]);
     }
 
-
     $user->save();
     return response()->json([
         "code" => 1000,
         "message" => "dang ky thanh cong",
         "data" => $request->all()
     ]);
-
-});
-
-
-Route::get('/login', function () {
-    return view('logIn');
 });
 
 Route::post('/login', function (Request $request) {
+    $token = generateRandomString(10);
     $credentials = User::where('phonenumber', $request->input('phonenumber'))->first();
     $phonenumber = $request->input('phonenumber');
     $password = $request->input('password');
@@ -133,7 +128,7 @@ Route::post('/login', function (Request $request) {
                 "data" => [
                     "id" => "no infomation",
                     "username" => "no infomation",
-                    "token" => $request->input('token'),
+                    "token" => "no infomation",
                     "avatar" => "no infomation"
                 ],
 
@@ -146,26 +141,29 @@ Route::post('/login', function (Request $request) {
                 "data" => [
                     "id" => "no infomation",
                     "username" => $phonenumber,
-                    "token" => $request->input('token'),
+                    "token" => "no infomation",
                     "avatar" => "no infomation"
                 ]
 
             ]);
         } else {
+            $credentials->token = $token;
+            $credentials->save();
+            session([
+                'data' => $credentials,
+                'token' => $token
+            ]);
             return response()->json([
                 "code" => 1000,
                 "message" => "ban da dang nhap thanh cong",
                 "data" => [
                     "id" => $credentials->id,
                     "username" => "chua co",
-                    "token" => "chua co",
+                    "token" => $token,
                     "avatar" => "chua co"
                 ],
-
             ]);
         }
-
-
     } else {
         return response()->json([
             "code" => 9996,
@@ -175,10 +173,30 @@ Route::post('/login', function (Request $request) {
                 "username" => "chua co",
                 "token" => "chua co",
                 "avatar" => "chua co"
-            ],
-
+            ]
         ]);
     }
 
+});
 
+Route::get('/home', function () {
+    if (session()->get('token') && session()->get('data')) {
+        return view('layout');
+    } else {
+        return redirect('/');
+    }
+});
+
+Route::post('/logout', function (Request $request) {
+    $credential = User::where('token', session()->get('token'))->first();
+
+    session()->pull('data');
+    session()->pull('token');
+    //xoa token server
+    $credential->token=null;
+    $credential->save();
+    return response()->json([
+        "code" => 1000,
+        "message" => "dang xuat thanh cong"
+    ]);
 });
