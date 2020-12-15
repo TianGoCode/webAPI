@@ -40,6 +40,7 @@ Route::get('/signup', function () {
 Route::get('/login', function () {
     return view('logIn');
 });
+Route::view('/test', 'logged.homepage');
 
 
 Route::get('/', function () {
@@ -180,11 +181,22 @@ Route::post('/login', function (Request $request) {
 });
 
 Route::get('/home', function () {
-    if (session()->get('token') && session()->get('data')) {
-        return view('layout');
+
+    $sessionToken = session()->get('token');
+    $newUser = session()->get('data');
+    $user = User::where('token', $sessionToken)->first();
+
+    //neu token cua user = token hien tai cua user tren server,tiep tuc....
+    if ($user) {
+        if ($newUser->name == null && $newUser->link_avatar == null) {
+            return redirect('/change_info_after_signup');
+        } else {
+            return view('layout');//tam thoi la view logout
+        }
     } else {
         return redirect('/');
     }
+
 });
 
 Route::post('/logout', function (Request $request) {
@@ -193,10 +205,58 @@ Route::post('/logout', function (Request $request) {
     session()->pull('data');
     session()->pull('token');
     //xoa token server
-    $credential->token=null;
+    $credential->token = null;
     $credential->save();
     return response()->json([
         "code" => 1000,
         "message" => "dang xuat thanh cong"
     ]);
+});
+
+Route::get('/change_info_after_signup', function () {
+    return view('logged.homepage');
+});
+
+Route::post('/change_info_after_signup', function (Request $request) {
+    $user = User::where('token', $request->token)->first();
+    //chua co check username
+    if (!$user) {
+        return redirect('/');
+    } else {
+        if ($request->input(['username'])) {
+            $user->name = $request->input(['username']);
+            if ($request->input(['avatar'])) {
+                $user->avatar = $request->input(['avatar']);
+            }
+            $user->touch();
+            $user->save();
+            session()->put("data",$user);
+            return response()->json([
+                "code" => 1000,
+                "message" => "cap nhat thong tin thanh cong",
+                "data" => [
+                    "id" => $user->id,
+                    "username" => $user->name,
+                    "phonenumber" => $user->phonenumber,
+                    "created" => $user->created_at,
+                    "avatar" => $user->avatar
+                ]
+            ]);
+        } else {
+            return response()->json([
+                "code" => 1004,
+                "message" => "username khong hop le"
+            ]);
+        }
+
+
+    }
+//    if($request->token != $user->token){
+//        return response()->json([
+//           "code"=>1004,
+//           "message"=>"ma token sai hoac thieu" ,
+//        ]);
+//    }
+
+
 });
