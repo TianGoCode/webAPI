@@ -86,7 +86,7 @@
         </div>
     </div>
 </div>
-
+@dump(session()->all())
 <script src="{{ URL::asset("js/home.js") }}"></script>
 <script>
     function makeid(length) {

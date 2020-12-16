@@ -77,7 +77,7 @@
     </nav>
 
     <main class="py-4">
-        @yield('content')
+
 
         <form action="/change_info_after_signup" method="post">
             @csrf

@@ -40,8 +40,11 @@ Route::get('/signup', function () {
 Route::get('/login', function () {
     return view('logIn');
 });
-Route::view('/test', 'logged.homepage');
-
+Route::view('/test', 'layout.layout');
+//Route::view('/test2', 'logged.change_info');
+Route::get('/test2', function () {
+    return view('logged.change_info', ['user' => User::where('token', '123456')->first()]);
+});
 
 Route::get('/', function () {
     return view('home');
@@ -57,7 +60,7 @@ Route::post('/signup', function (Request $request) {
 
     $duplicate = User::where('phonenumber', $user->phonenumber)->first();
 
-    if ($duplicate) {
+    if ($duplicate != null) {
         //kiem tra trung lap sdt
         return response()->json([
             "code" => 9996,
@@ -120,7 +123,7 @@ Route::post('/login', function (Request $request) {
     }
     //sai ding dang sdt: chua lam dc
     //dung sdt
-    if ($credentials) {
+    if ($credentials != null) {
         //mat khau de trong
         if ($request->input('password') == null) {
             return response()->json([
@@ -187,11 +190,14 @@ Route::get('/home', function () {
     $user = User::where('token', $sessionToken)->first();
 
     //neu token cua user = token hien tai cua user tren server,tiep tuc....
-    if ($user) {
+    if($newUser == null || $sessionToken == null){
+        return redirect('/');
+    }
+    if ($user != null) {
         if ($newUser->name == null && $newUser->link_avatar == null) {
             return redirect('/change_info_after_signup');
         } else {
-            return view('layout');//tam thoi la view logout
+            return view('logged.home');//tam thoi la view logout
         }
     } else {
         return redirect('/');
@@ -214,13 +220,14 @@ Route::post('/logout', function (Request $request) {
 });
 
 Route::get('/change_info_after_signup', function () {
-    return view('logged.homepage');
+    return view('logged.change_info');
 });
 
 Route::post('/change_info_after_signup', function (Request $request) {
     $user = User::where('token', $request->token)->first();
-    //chua co check username
-    if (!$user) {
+
+    if ($user == null) {
+        //khong ton tai user tuc la token dang khong duoc dung
         return redirect('/');
     } else {
         if ($request->input(['username'])) {
@@ -230,7 +237,7 @@ Route::post('/change_info_after_signup', function (Request $request) {
             }
             $user->touch();
             $user->save();
-            session()->put("data",$user);
+            session()->put("data", $user);
             return response()->json([
                 "code" => 1000,
                 "message" => "cap nhat thong tin thanh cong",
@@ -248,8 +255,6 @@ Route::post('/change_info_after_signup', function (Request $request) {
                 "message" => "username khong hop le"
             ]);
         }
-
-
     }
 //    if($request->token != $user->token){
 //        return response()->json([
@@ -258,5 +263,6 @@ Route::post('/change_info_after_signup', function (Request $request) {
 //        ]);
 //    }
 
-
 });
+
+
