@@ -41,8 +41,8 @@
             <div class="navbar-brand">
 
                     <span class="navbar-caption-wrap">
-                        <a class="navbar-caption text-black display-7" href="#">
-                            Dat's Book
+                        <a class="navbar-caption text-black display-7" href="/home">
+                            MXH-INPG16
                         </a>
                     </span>
             </div>
@@ -61,13 +61,13 @@
 
                     <li class="nav-item">
                         <a class="nav-link link text-black display-4" href="#">
-                            <input class="form-control mr-sm-2" type="search" placeholder="Search"
+                            <input class="form-control mr-sm-2" type="search" placeholder="Tìm kiếm gì đó..."
                                    aria-label="Search">
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link link text-black display-4" href="#">
-                            <button class="btn btn-outline-dark my-2 my-sm-0">Hưng Lê</button>
+                            <button class="btn btn-outline-dark my-2 my-sm-0">{{ session()->get('data')->name }}</button>
                         </a>
                     </li>
 

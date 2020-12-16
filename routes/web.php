@@ -265,4 +265,11 @@ Route::post('/change_info_after_signup', function (Request $request) {
 
 });
 
+Route::post('/add_post',function(Request $request){
+    return response()->json([
+        "code"=>1000,
+        "message"=>"dang bai thanh cong",
+        "data"=>$request->all()
+    ]);
+});
 

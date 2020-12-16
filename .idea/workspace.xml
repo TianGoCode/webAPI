@@ -20,56 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b2c5e89-6c72-4fb7-a3ac-3eb1ca9abd64" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/bootstrap/css/bootstrap-grid.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/bootstrap/css/bootstrap-reboot.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/bootstrap/css/bootstrap.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/bootstrap/js/bootstrap.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/dropdown/css/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/dropdown/js/nav-dropdown.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/dropdown/js/navbar-dropdown.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/6.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/app4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/background3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/background5.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/background7.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/background8.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/features1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/features2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/features3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/features4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/product1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/product2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/product3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/product4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/images/product5.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/mobirise/css/mbr-additional.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/parallax/jarallax.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/popper/popper.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/smoothscroll/smooth-scroll.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/socicon/css/styles.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/socicon/fonts/socicon.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/socicon/fonts/socicon.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/socicon/fonts/socicon.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/socicon/fonts/socicon.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/socicon/fonts/socicon.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/tether/tether.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/tether/tether.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/theme/css/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/theme/js/script.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/touchswipe/jquery.touch-swipe.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/web/assets/jquery/jquery.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/web/assets/mobirise-icons2/mobirise2.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/web/assets/mobirise-icons2/mobirise2.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/web/assets/mobirise-icons2/mobirise2.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/web/assets/mobirise-icons2/mobirise2.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/hp-assets/web/assets/mobirise-icons2/mobirise2.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/layout/layout.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/logged/change_info.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/logged/home.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Post.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/home.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/home.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/logged/homepage.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/logged/homepage.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layout/layout.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layout/layout.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/logged/home.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/logged/home.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -253,7 +208,7 @@
       <workItem from="1608095791720" duration="28000" />
       <workItem from="1608106174335" duration="5453000" />
       <workItem from="1608113248682" duration="23000" />
-      <workItem from="1608125672321" duration="3484000" />
+      <workItem from="1608125672321" duration="7563000" />
     </task>
     <servers />
   </component>
