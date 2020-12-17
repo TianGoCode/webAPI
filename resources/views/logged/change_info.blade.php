@@ -20,14 +20,14 @@
                 <label class="form-label">Upload avatar: </label>
                 <input type="file" name="avatar">
             </div>
-{{--            <input type="hidden" name="token" value="{{ session()->get('data')->token }}">--}}
+            <input type="hidden" name="token" value="{{ session()->get('data')->token }}">
             <div class="col-auto">
                 <input type="submit" class="btn btn-primary mb-3" value="Update">
             </div>
         </form>
     </div>
 
-    @dump(session()->get('data'))
-    @dump($user)
+    @dump(session()->all())
+    @dump($posts)
 
 @endsection

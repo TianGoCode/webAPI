@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Post;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Webpatser\Uuid\Uuid;
@@ -43,7 +44,7 @@ Route::get('/login', function () {
 Route::view('/test', 'layout.layout');
 //Route::view('/test2', 'logged.change_info');
 Route::get('/test2', function () {
-    return view('logged.change_info', ['user' => User::where('token', '123456')->first()]);
+    return view('logged.change_info', ['posts' =>  $posts = Post::where('author_id',session()->get('data')->id)->get()]);
 });
 
 Route::get('/', function () {
@@ -188,16 +189,20 @@ Route::get('/home', function () {
     $sessionToken = session()->get('token');
     $newUser = session()->get('data');
     $user = User::where('token', $sessionToken)->first();
-
+//    $posts = Post::where('author_id',$user->id)->get();
     //neu token cua user = token hien tai cua user tren server,tiep tuc....
-    if($newUser == null || $sessionToken == null){
+    $posts = DB::table('posts')->join('users','posts.author_id','=','users.id')->select('posts.*','users.name')->get();
+    if ($newUser == null || $sessionToken == null) {
         return redirect('/');
     }
     if ($user != null) {
         if ($newUser->name == null && $newUser->link_avatar == null) {
             return redirect('/change_info_after_signup');
         } else {
-            return view('logged.home');//tam thoi la view logout
+            if($posts){
+                return view('logged.home',["posts"=>$posts]);
+            }
+            return view('logged.home');
         }
     } else {
         return redirect('/');
@@ -265,11 +270,45 @@ Route::post('/change_info_after_signup', function (Request $request) {
 
 });
 
-Route::post('/add_post',function(Request $request){
-    return response()->json([
-        "code"=>1000,
-        "message"=>"dang bai thanh cong",
-        "data"=>$request->all()
-    ]);
+Route::post('/add_post', function (Request $request) {
+    $credential = User::where('token', session()->get('token'))->first();
+    if ($credential) {
+        $post = new Post();
+        $post->described = $request->input('described');
+        $post->author_id = $credential->id;
+        $post->media = $request->input('image');
+
+        if ($post->described != null || $post->media != null) {
+            $post->save();
+        } else if($post->described != null && $post->media != null){
+            return response()->json([
+                "code" => "???",
+                "message" => "khong co gi de dang ca",
+                "data" => [
+                    "id" => "...",
+                    "url" => "..."
+                ]
+            ]);
+        }
+        $latest = Post::where('author_id', $credential->id)->latest()->first();
+
+        return response()->json([
+            "code" => 1000,
+            "message" => "dang bai thanh cong",
+            "data" => [
+                "id" => $latest->id,
+                "url" => "https://127.0.0.1/" . $latest->id
+            ]
+        ]);
+    } else {
+        return response()->json([
+            "code" => 9999,
+            "message" => "dang bai k thanh cong dang nhap lai",
+            "data" => $request->all()
+        ]);
+    }
+
 });
+
+
 
