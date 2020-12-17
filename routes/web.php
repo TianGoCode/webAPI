@@ -35,6 +35,14 @@ Route::get('/wel', function () {
     return view('welcome');
 });
 
+<<<<<<< HEAD
+// Route::get('/signup', function () {
+//     return view('signUp');
+// });
+
+Route::post('/signup', function (Request $request) {
+
+=======
 Route::get('/signup', function () {
     return view('signUp');
 });
@@ -50,10 +58,14 @@ Route::get('/test2', function () {
 Route::get('/', function () {
     return view('home');
 });
+>>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
 
 Route::post('/signup', function (Request $request) {
     // lay ra thong tin request duoc gui len
+<<<<<<< HEAD
+=======
 
+>>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
     $user = new User();
     $user->phonenumber = $request->input('phone');
     $user->password = $request->input('pass');
@@ -61,7 +73,23 @@ Route::post('/signup', function (Request $request) {
 
     $duplicate = User::where('phonenumber', $user->phonenumber)->first();
 
+<<<<<<< HEAD
+    //ktra dinh dang
+    $phoneNumber = $request->input('phone');
+    $oneNum = substr($phoneNumber,0,1);
+    if(strlen($phoneNumber) != 10 || $oneNum != '0'){
+        return response()->json([
+            "code" =>1004,
+            "message" => "Sai định dạng số điện thoại",
+            "data" => $request -> all()
+        ]);
+    }
+
+    if ($duplicate) {
+
+=======
     if ($duplicate != null) {
+>>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
         //kiem tra trung lap sdt
         return response()->json([
             "code" => 9996,
@@ -278,6 +306,22 @@ Route::post('/add_post', function (Request $request) {
         $post->author_id = $credential->id;
         $post->media = $request->input('image');
 
+<<<<<<< HEAD
+    $user = User::where('phonenumber',$request->input('phonenumber'))->first();
+    if($user){
+    return response()->json([
+            "code"=>1000,
+            "message"=>"ban da dang nhap thanh cong",
+            "data"=>[
+                "id"=>$user->id,
+                "username"=>"chua co",
+                "token"=>"chua co",
+                "avatar"=>"chua co"
+            ]
+        ]);
+    }
+   
+=======
         if ($post->described != null || $post->media != null) {
             $post->save();
         } else if ($post->described != null && $post->media != null) {
@@ -357,6 +401,7 @@ Route::post('/get_post', function (Request $request) {
         ],
         "req" => $request->all(),
     ]);
+>>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
 });
 
 
