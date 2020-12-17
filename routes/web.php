@@ -35,24 +35,37 @@ Route::get('/wel', function () {
     return view('welcome');
 });
 
+<<<<<<< HEAD
+// Route::get('/signup', function () {
+//     return view('signUp');
+// });
+
+Route::post('/signup', function (Request $request) {
+
+=======
 Route::get('/signup', function () {
     return view('signUp');
 });
 Route::get('/login', function () {
-    return view('home');
+    return view('logIn');
 });
 Route::view('/test', 'layout.layout');
 //Route::view('/test2', 'logged.change_info');
 Route::get('/test2', function () {
-    return view('logged.change_info', ['posts' =>  $posts = Post::where('author_id',session()->get('data')->id)->get()]);
+    return view('logged.change_info', ['posts' => $posts = Post::where('author_id', session()->get('data')->id)->get()]);
 });
 
 Route::get('/', function () {
     return view('home');
-}); 
+});
+>>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
 
 Route::post('/signup', function (Request $request) {
     // lay ra thong tin request duoc gui len
+<<<<<<< HEAD
+=======
+
+>>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
     $user = new User();
     $user->phonenumber = $request->input('phone');
     $user->password = $request->input('pass');
@@ -60,6 +73,7 @@ Route::post('/signup', function (Request $request) {
 
     $duplicate = User::where('phonenumber', $user->phonenumber)->first();
 
+<<<<<<< HEAD
     //ktra dinh dang
     $phoneNumber = $request->input('phone');
     $oneNum = substr($phoneNumber,0,1);
@@ -73,6 +87,9 @@ Route::post('/signup', function (Request $request) {
 
     if ($duplicate) {
 
+=======
+    if ($duplicate != null) {
+>>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
         //kiem tra trung lap sdt
         return response()->json([
             "code" => 9996,
@@ -200,9 +217,9 @@ Route::get('/home', function () {
     $sessionToken = session()->get('token');
     $newUser = session()->get('data');
     $user = User::where('token', $sessionToken)->first();
-   $posts = Post::where('author_id',$user->id)->get();
+//    $posts = Post::where('author_id',$user->id)->get();
     //neu token cua user = token hien tai cua user tren server,tiep tuc....
-    $posts = DB::table('posts')->join('users','posts.author_id','=','users.id')->select('posts.*','users.name')->get();
+    $posts = DB::table('posts')->join('users', 'posts.author_id', '=', 'users.id')->select('posts.*', 'users.name')->get();
     if ($newUser == null || $sessionToken == null) {
         return redirect('/');
     }
@@ -210,8 +227,8 @@ Route::get('/home', function () {
         if ($newUser->name == null && $newUser->link_avatar == null) {
             return redirect('/change_info_after_signup');
         } else {
-            if($posts){
-                return view('logged.home',["posts"=>$posts]);
+            if ($posts) {
+                return view('logged.home', ["posts" => $posts]);
             }
             return view('logged.home');
         }
@@ -289,9 +306,25 @@ Route::post('/add_post', function (Request $request) {
         $post->author_id = $credential->id;
         $post->media = $request->input('image');
 
+<<<<<<< HEAD
+    $user = User::where('phonenumber',$request->input('phonenumber'))->first();
+    if($user){
+    return response()->json([
+            "code"=>1000,
+            "message"=>"ban da dang nhap thanh cong",
+            "data"=>[
+                "id"=>$user->id,
+                "username"=>"chua co",
+                "token"=>"chua co",
+                "avatar"=>"chua co"
+            ]
+        ]);
+    }
+   
+=======
         if ($post->described != null || $post->media != null) {
             $post->save();
-        } else if($post->described != null && $post->media != null){
+        } else if ($post->described != null && $post->media != null) {
             return response()->json([
                 "code" => "???",
                 "message" => "khong co gi de dang ca",
@@ -321,51 +354,54 @@ Route::post('/add_post', function (Request $request) {
 
 });
 
-Route::get('/get_post/{id}',function($id){
+Route::get('/get_post/{id}', function ($id) {
+    $post = Post::find($id);
+    $comments = $post->hasCmts;
+    return view('logged.post.view',['post'=>$post,'comments'=>$comments]);
 
 });
-Route::post('/get_post',function(Request $request){
-//    $user = User::where('token',$request->input('token'))->first();
-    $post = Post::where('id',$request->input('pid'))->first();
-    // return response()->json([
-    //     "code"=>1000,
-    //     "message"=>"lay bai viet thanh cong",
-    //     "data"=>[
-    //         "id"=>$post->id,
-    //         "described"=>$post->described,
-    //         "modified"=>$post->updated_at,
-    //         "like"=>'',
-    //         "comments"=>'',
-    //         "is_liked"=>"",
-    //         "images"=>"",
-    //         "videos"=>"",
-    //         "author"=>[
-    //             "id"=>"",
-    //             "name"=>"",
-    //             "avatar"=>"",
-    //             "is_online"=>"",
-    //         ],
-    //         "state"=>"",
-    //         "is_blocked"=>"",
-    //         "can_edit"=>"",
-    //         "banned"=>"",
-    //         "url"=>"",
-    //         "messages"=>"",
-    //         "can_comment"=>""
-    //     ],
-    //     "req"=>$request->all()
-    // ]);
-    return response()->json([
-        'tra ve'->$request
-    ]);
-});
 
-Route::post("/like",function(Request $request){
-    $post = Post::where('id',$request->input('pid'))->first();
-    $credential = User::where('token',$request->input('token'))->first();
-    if($credential != null && $post!=null){
-        
+Route::post('/get_post', function (Request $request) {
+
+
+    $post = Post::find($request->input('pid'));
+    $user = User::find($post->author_id);
+    $comments = $post->hasCmts;
+
+    if ($request->input('token') != $user->token) {
+        return redirect('/');
     }
-    else return redirect('/');
+
+    return response()->json([
+        "code" => 1000,
+        "message" => "lay bai viet thanh cong",
+        "data" => [
+            "id" => $post->id,
+            "described" => $post->described,
+            "modified" => $post->updated_at,
+            "like" => '',
+            "comments" => sizeof($comments),
+            "is_liked" => "",
+            "images" => "",
+            "videos" => "",
+            "author" => [
+                "id" => $user->id,
+                "username" => $user->name,
+                "avatar" => $user->avatar,
+                "is_online" => "1",
+            ],
+
+            "state" => "1",
+            "is_blocked" => "0",
+            "can_edit" => "1",
+            "banned" => "0",
+            "url" => "localhost:8000/get_post/" . $post->id,
+            "messages" => "",
+            "can_comment" => "1"
+        ],
+        "req" => $request->all(),
+    ]);
+>>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
 });
+
 

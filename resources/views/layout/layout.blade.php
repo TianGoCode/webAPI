@@ -60,8 +60,8 @@
                 <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
 
                     <li class="nav-item">
-                        <a class="nav-link link text-black display-4" href="#">
-                            <input class="form-control mr-sm-2" type="search" placeholder="Tìm kiếm gì đó..."
+                        <a class="nav-link link text-black display-4" >
+                            <input class="form-control mr-sm-2" type="text" placeholder="Tìm kiếm gì đó..."
                                    aria-label="Search">
                         </a>
                     </li>
