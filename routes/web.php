@@ -30,20 +30,14 @@ Route::get('/home', function () {
     return view('home');
 });
 
-Route::get('/signup', function () {
-    return view('signUp');
-});
+// Route::get('/signup', function () {
+//     return view('signUp');
+// });
 
 Route::post('/signup', function (Request $request) {
-<<<<<<< HEAD
-  
-
-//    lay ra thong tin request duoc gui len
-=======
 
 
     // lay ra thong tin request duoc gui len
->>>>>>> 7ea9bd76c9b2c1a7b2462865c32dec259ba495d8
     $user = new User();
     $user->phonenumber = $request->input('phone');
     $user->password = bcrypt($request->input('pass'));
@@ -51,8 +45,17 @@ Route::post('/signup', function (Request $request) {
 
     $duplicate = User::where('phonenumber', $user->phonenumber)->first();
 
+    //ktra dinh dang
+    $phoneNumber = $request->input('phone');
+    $oneNum = substr($phoneNumber,0,1);
+    if(strlen($phoneNumber) != 10 || $oneNum != '0'){
+        return response()->json([
+            "code" =>1004,
+            "message" => "Sai định dạng số điện thoại",
+            "data" => $request -> all()
+        ]);
+    }
 
-    
     if ($duplicate) {
 
         //kiem tra trung lap sdt
@@ -105,14 +108,18 @@ Route::get('/login', function () {
 
 Route::post('/login', function (Request $request) {
 
+    $user = User::where('phonenumber',$request->input('phonenumber'))->first();
+    if($user){
     return response()->json([
-        "code"=>1000,
-        "message"=>"ban da dang nhap thanh cong",
-        "data"=>[
-            "id"=>User::where('phonenumber',$request->input('phonenumber'))->first()->id,
-            "username"=>"chua co",
-            "token"=>"chua co",
-            "avatar"=>"chua co"
-        ]
-    ]);
+            "code"=>1000,
+            "message"=>"ban da dang nhap thanh cong",
+            "data"=>[
+                "id"=>$user->id,
+                "username"=>"chua co",
+                "token"=>"chua co",
+                "avatar"=>"chua co"
+            ]
+        ]);
+    }
+   
 });

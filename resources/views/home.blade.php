@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="style.css"/>
     <title>OurMedia</title>
     <link rel="stylesheet" href="{{ URL::asset("css/home.css") }}">
-
+    
 </head>
-<body>
+<body >
 <div class="container">
     <div class="forms-container">
         <div class="signin-signup">
@@ -38,17 +38,11 @@
                 <h2 class="title">Sign up!!</h2>
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" name="phone" placeholder="Username"/>
-
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                    <input type="text" name="phone" id="phone" placeholder="Username"/>
+                    <div id="errorUser">
+                    
+                    </div>
+                    
 
                 </div>
 
@@ -56,18 +50,8 @@
                     <i class="fas fa-lock"></i>
                     <input type="password" name="pass" placeholder="Password"/>
 
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
                 </div>
-                <input type="submit" class="btn" value="Sign up"/>
+                <input type="button" class="btn" value="Sign up"/>
                 <input type="hidden" name="uuid" class="form-control" >
             </form>
         </div>
@@ -104,4 +88,5 @@
 <script src="{{ URL::asset("js/home.js") }}"></script>
 
 </body>
+
 </html>
