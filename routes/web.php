@@ -44,7 +44,7 @@ Route::get('/login', function () {
 Route::view('/test', 'layout.layout');
 //Route::view('/test2', 'logged.change_info');
 Route::get('/test2', function () {
-    return view('logged.change_info', ['posts' =>  $posts = Post::where('author_id',session()->get('data')->id)->get()]);
+    return view('logged.change_info', ['posts' => $posts = Post::where('author_id', session()->get('data')->id)->get()]);
 });
 
 Route::get('/', function () {
@@ -191,7 +191,7 @@ Route::get('/home', function () {
     $user = User::where('token', $sessionToken)->first();
 //    $posts = Post::where('author_id',$user->id)->get();
     //neu token cua user = token hien tai cua user tren server,tiep tuc....
-    $posts = DB::table('posts')->join('users','posts.author_id','=','users.id')->select('posts.*','users.name')->get();
+    $posts = DB::table('posts')->join('users', 'posts.author_id', '=', 'users.id')->select('posts.*', 'users.name')->get();
     if ($newUser == null || $sessionToken == null) {
         return redirect('/');
     }
@@ -199,8 +199,8 @@ Route::get('/home', function () {
         if ($newUser->name == null && $newUser->link_avatar == null) {
             return redirect('/change_info_after_signup');
         } else {
-            if($posts){
-                return view('logged.home',["posts"=>$posts]);
+            if ($posts) {
+                return view('logged.home', ["posts" => $posts]);
             }
             return view('logged.home');
         }
@@ -280,7 +280,7 @@ Route::post('/add_post', function (Request $request) {
 
         if ($post->described != null || $post->media != null) {
             $post->save();
-        } else if($post->described != null && $post->media != null){
+        } else if ($post->described != null && $post->media != null) {
             return response()->json([
                 "code" => "???",
                 "message" => "khong co gi de dang ca",
@@ -310,39 +310,52 @@ Route::post('/add_post', function (Request $request) {
 
 });
 
-Route::get('/get_post/{id}',function($id){
+Route::get('/get_post/{id}', function ($id) {
+    $post = Post::find($id);
+    $comments = $post->hasCmts;
+    return view('logged.post.view',['post'=>$post,'comments'=>$comments]);
 
 });
-Route::post('/get_post',function(Request $request){
-//    $user = User::where('token',$request->input('token'))->first();
-    $post = Post::where('id',$request->input('pid'))->first();
+
+Route::post('/get_post', function (Request $request) {
+
+
+    $post = Post::find($request->input('pid'));
+    $user = User::find($post->author_id);
+    $comments = $post->hasCmts;
+
+    if ($request->input('token') != $user->token) {
+        return redirect('/');
+    }
+
     return response()->json([
-        "code"=>1000,
-        "message"=>"lay bai viet thanh cong",
-        "data"=>[
-            "id"=>$post->id,
-            "described"=>$post->described,
-            "modified"=>$post->updated_at,
-            "like"=>'',
-            "comments"=>'',
-            "is_liked"=>"",
-            "images"=>"",
-            "videos"=>"",
-            "author"=>[
-                "id"=>"",
-                "name"=>"",
-                "avatar"=>"",
-                "is_online"=>"",
+        "code" => 1000,
+        "message" => "lay bai viet thanh cong",
+        "data" => [
+            "id" => $post->id,
+            "described" => $post->described,
+            "modified" => $post->updated_at,
+            "like" => '',
+            "comments" => sizeof($comments),
+            "is_liked" => "",
+            "images" => "",
+            "videos" => "",
+            "author" => [
+                "id" => $user->id,
+                "username" => $user->name,
+                "avatar" => $user->avatar,
+                "is_online" => "1",
             ],
-            "state"=>"",
-            "is_blocked"=>"",
-            "can_edit"=>"",
-            "banned"=>"",
-            "url"=>"",
-            "messages"=>"",
-            "can_comment"=>""
+
+            "state" => "1",
+            "is_blocked" => "0",
+            "can_edit" => "1",
+            "banned" => "0",
+            "url" => "localhost:8000/get_post/" . $post->id,
+            "messages" => "",
+            "can_comment" => "1"
         ],
-        "req"=>$request->all()
+        "req" => $request->all(),
     ]);
 });
 

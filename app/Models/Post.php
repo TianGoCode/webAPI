@@ -12,4 +12,8 @@ class Post extends Model
     public function postedBy(){
         return $this->belongsTo('App\Models\User',"author_id");
     }
+
+    public function hasCmts(){
+        return $this->hasMany('App\Models\Comment', 'on_post');
+    }
 }
