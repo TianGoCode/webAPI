@@ -310,5 +310,40 @@ Route::post('/add_post', function (Request $request) {
 
 });
 
+Route::get('/get_post/{id}',function($id){
+
+});
+Route::post('/get_post',function(Request $request){
+//    $user = User::where('token',$request->input('token'))->first();
+    $post = Post::where('id',$request->input('pid'))->first();
+    return response()->json([
+        "code"=>1000,
+        "message"=>"lay bai viet thanh cong",
+        "data"=>[
+            "id"=>$post->id,
+            "described"=>$post->described,
+            "modified"=>$post->updated_at,
+            "like"=>'',
+            "comments"=>'',
+            "is_liked"=>"",
+            "images"=>"",
+            "videos"=>"",
+            "author"=>[
+                "id"=>"",
+                "name"=>"",
+                "avatar"=>"",
+                "is_online"=>"",
+            ],
+            "state"=>"",
+            "is_blocked"=>"",
+            "can_edit"=>"",
+            "banned"=>"",
+            "url"=>"",
+            "messages"=>"",
+            "can_comment"=>""
+        ],
+        "req"=>$request->all()
+    ]);
+});
 
 

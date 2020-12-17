@@ -66,10 +66,12 @@
                         <li class="list-group-item">Vestibulum at eros</li>
                     </ul>
                     <div class="posts-cmt">
-                        <a href="/get_post/{{$p->id}}">đi tới bài viết</a>
                         <form action="/get_post" method="post">
+                            @csrf
                             <input type="hidden" name="token" value="{{ session()->get('token') }}">
-                            <input type="hidden" name="id" value="{{ $p->id }}">
+                            <input type="hidden" name="pid" value="{{ $p->id }}">
+                            <a href="/get_post/{{$p->id}} ">đi tới bài viết</a><br>
+                            <input type="submit" value="đi tới bài viết(json)">
                         </form>
                     </div>
                 </div>

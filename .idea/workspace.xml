@@ -21,8 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8b2c5e89-6c72-4fb7-a3ac-3eb1ca9abd64" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_12_02_041922_create_posts_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_12_02_041922_create_posts_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/logged/change_info.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/logged/change_info.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/logged/home.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/logged/home.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
@@ -209,7 +207,7 @@
       <workItem from="1608113248682" duration="23000" />
       <workItem from="1608125672321" duration="8163000" />
       <workItem from="1608156466828" duration="5845000" />
-      <workItem from="1608168609596" duration="2311000" />
+      <workItem from="1608168609596" duration="4191000" />
     </task>
     <servers />
   </component>
