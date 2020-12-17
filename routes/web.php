@@ -397,3 +397,34 @@ Route::post('/like',function(){
     }
 
 });
+
+Route::post('/get_comment',function(Request $request){
+    $credential = User::where('token',session()->get('token'))->first();
+    $post=Post::find($request->input('pid'));
+    //chua co model table comment
+    $onPost = onPost::find($request->input('pid'));
+    $index = $request->input('index');
+    $count = $request ->input('count');
+
+    //dung tat ok
+    if($credential != null && $post != null && $index == true && $count == true){
+        return response()->json([
+            "code"=>1000,
+            "message"=>"OK",
+            "data"=>[
+                "id"=>$onPost->on_post,
+                "comment"=>$onPost->content,
+                "created"=>$onPost->created_at,
+                "poster" => [
+                    "id"=>$onPost->from_user,
+                    "name"=>"",
+                    "avatar"=>""
+                ]
+                    ]
+        ]);
+    }
+
+    if($credential == null){
+        return redirect("home");
+    }
+});
