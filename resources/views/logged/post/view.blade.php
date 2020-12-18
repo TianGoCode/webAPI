@@ -88,6 +88,7 @@
                                         <p>{{ $c->content }}</p>
                                     </div>
                                 @endforeach
+                                    @dump($comments)
                             @endisset
                         </div>
                     </div>
@@ -96,5 +97,5 @@
 
     </div>
     @dump($post)
-    @dump($comments)
+
 @endsection

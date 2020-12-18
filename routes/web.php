@@ -347,10 +347,6 @@ Route::post('/add_post', function (Request $request) {
 
 
 
-
-
-
-
 Route::get('/get_post/{id}', function ($id) {
     if (!session()->get('data')) {
         return redirect('/');
@@ -402,6 +398,79 @@ Route::post('/get_post', function (Request $request) {
     ]);
 
 });
+
+
+Route::post('/like',function(){
+    $post = Post::find($request->input('pid'));
+    $credential = User::where('token',session()->get('token'))->first();
+
+    //tc2-sai token
+    if($credential == null){
+        return redirect('/home');
+    }
+
+    if($post != null && $credential != null){
+        //sai tieu chuan hoac quoc gia
+        if($post->banned == 1 || $post->banned == 2){
+            return response()->json([
+                "code"=>1010,
+                "message"=>"Bai viet da bi xoa",
+            ]);
+            //xoa bai viet
+        }
+
+
+        //tc1-ok
+        return response()->json([
+            "code"=>1000,
+            "message"=>"OK",
+            "data"=>[
+                "like"=>"Chua biet lay dau",
+            ]
+        ]);
+    }
+    //tc6-dung ma phien , sai id bai viet
+    if($post == null && $credential != null){
+        return response()->json([
+            'code'=>9992,
+            'message'=>'Bai viet khong ton tai',
+            'data'=>null
+        ]);
+    }
+
+});
+
+Route::post('/get_comment',function(Request $request){
+    $credential = User::where('token',session()->get('token'))->first();
+    $post=Post::find($request->input('pid'));
+    //chua co model table comment
+    $onPost = onPost::find($request->input('pid'));
+    $index = $request->input('index');
+    $count = $request ->input('count');
+
+    //dung tat ok
+    if($credential != null && $post != null && $index == true && $count == true){
+        return response()->json([
+            "code"=>1000,
+            "message"=>"OK",
+            "data"=>[
+                "id"=>$onPost->on_post,
+                "comment"=>$onPost->content,
+                "created"=>$onPost->created_at,
+                "poster" => [
+                    "id"=>$onPost->from_user,
+                    "name"=>"",
+                    "avatar"=>""
+                ]
+            ]
+        ]);
+    }
+
+    if($credential == null){
+        return redirect("home");
+    }
+});
+
 
 
 
