@@ -28,6 +28,6 @@
     </div>
 
     @dump(session()->all())
-    @dump($posts)
+
 
 @endsection

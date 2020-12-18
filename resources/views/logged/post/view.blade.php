@@ -62,6 +62,8 @@
                                 <input type="submit" value="đi tới bài viết(json)">
                             </form>
                         </div>
+
+
                         <div class="posts-cmt">
                             <form action="/get_post" method="post">
                                 @csrf
@@ -72,6 +74,10 @@
                                 <input type="submit" value="bình luận">
                             </form>
                         </div>
+
+
+
+
                         <div class="posts-cmt pt-5 md-5">
                             @isset($comments)
                                 @foreach($comments as $c)
