@@ -35,14 +35,7 @@ Route::get('/wel', function () {
     return view('welcome');
 });
 
-<<<<<<< HEAD
-// Route::get('/signup', function () {
-//     return view('signUp');
-// });
 
-Route::post('/signup', function (Request $request) {
-
-=======
 Route::get('/signup', function () {
     return view('signUp');
 });
@@ -58,14 +51,11 @@ Route::get('/test2', function () {
 Route::get('/', function () {
     return view('home');
 });
->>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
+
 
 Route::post('/signup', function (Request $request) {
     // lay ra thong tin request duoc gui len
-<<<<<<< HEAD
-=======
 
->>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
     $user = new User();
     $user->phonenumber = $request->input('phone');
     $user->password = $request->input('pass');
@@ -73,62 +63,63 @@ Route::post('/signup', function (Request $request) {
 
     $duplicate = User::where('phonenumber', $user->phonenumber)->first();
 
-<<<<<<< HEAD
+
     //ktra dinh dang
     $phoneNumber = $request->input('phone');
-    $oneNum = substr($phoneNumber,0,1);
-    if(strlen($phoneNumber) != 10 || $oneNum != '0'){
+    $oneNum = substr($phoneNumber, 0, 1);
+    if (strlen($phoneNumber) != 10 || $oneNum != '0') {
         return response()->json([
-            "code" =>1004,
+            "code" => 1004,
             "message" => "Sai định dạng số điện thoại",
-            "data" => $request -> all()
+            "data" => $request->all()
         ]);
     }
 
     if ($duplicate) {
 
-=======
-    if ($duplicate != null) {
->>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
-        //kiem tra trung lap sdt
-        return response()->json([
-            "code" => 9996,
-            "message" => "Người dùng đã tồn tại",
-            "data" => $request->all()
-        ]);
-    }
-    if ($request->input('phone') == null) {
-        //neu chua nhap sdt
-        return response()->json([
-            "code" => "error",
-            "message" => "ban chua nhap so dien thoai",
-            "data" => $request->all()
-        ]);
-    }
-    if ($request->input('pass') == null) {
-        // neu chua nhap mk
-        return response()->json([
-            "code" => "error",
-            "message" => "ban chua nhap mat khau",
-            "data" => $request->all()
-        ]);
-    }
-    if ($request->input('phone') == $request->input('pass')) {
-        //neu mk trung sdt
-        return response()->json([
-            "code" => "error",
-            "message" => "ban da nhap sodien thoai trung mat khau",
-            "data" => $request->all(),
-            "user" => $user
-        ]);
-    }
 
-    $user->save();
-    return response()->json([
-        "code" => 1000,
-        "message" => "dang ky thanh cong",
-        "data" => $request->all()
-    ]);
+        if ($duplicate != null) {
+
+            //kiem tra trung lap sdt
+            return response()->json([
+                "code" => 9996,
+                "message" => "Người dùng đã tồn tại",
+                "data" => $request->all()
+            ]);
+        }
+        if ($request->input('phone') == null) {
+            //neu chua nhap sdt
+            return response()->json([
+                "code" => "error",
+                "message" => "ban chua nhap so dien thoai",
+                "data" => $request->all()
+            ]);
+        }
+        if ($request->input('pass') == null) {
+            // neu chua nhap mk
+            return response()->json([
+                "code" => "error",
+                "message" => "ban chua nhap mat khau",
+                "data" => $request->all()
+            ]);
+        }
+        if ($request->input('phone') == $request->input('pass')) {
+            //neu mk trung sdt
+            return response()->json([
+                "code" => "error",
+                "message" => "ban da nhap sodien thoai trung mat khau",
+                "data" => $request->all(),
+                "user" => $user
+            ]);
+        }
+
+        $user->save();
+        return response()->json([
+            "code" => 1000,
+            "message" => "dang ky thanh cong",
+            "data" => $request->all()
+        ]);
+    };
 });
 
 Route::post('/login', function (Request $request) {
@@ -217,7 +208,6 @@ Route::get('/home', function () {
     $sessionToken = session()->get('token');
     $newUser = session()->get('data');
     $user = User::where('token', $sessionToken)->first();
-//    $posts = Post::where('author_id',$user->id)->get();
     //neu token cua user = token hien tai cua user tren server,tiep tuc....
     $posts = DB::table('posts')->join('users', 'posts.author_id', '=', 'users.id')->select('posts.*', 'users.name')->get();
     if ($newUser == null || $sessionToken == null) {
@@ -306,22 +296,22 @@ Route::post('/add_post', function (Request $request) {
         $post->author_id = $credential->id;
         $post->media = $request->input('image');
 
-<<<<<<< HEAD
-    $user = User::where('phonenumber',$request->input('phonenumber'))->first();
-    if($user){
-    return response()->json([
-            "code"=>1000,
-            "message"=>"ban da dang nhap thanh cong",
-            "data"=>[
-                "id"=>$user->id,
-                "username"=>"chua co",
-                "token"=>"chua co",
-                "avatar"=>"chua co"
-            ]
-        ]);
-    }
-   
-=======
+
+        $user = User::where('phonenumber', $request->input('phonenumber'))->first();
+        if ($user) {
+            return response()->json([
+                "code" => 1000,
+                "message" => "ban da dang nhap thanh cong",
+                "data" => [
+                    "id" => $user->id,
+                    "username" => "chua co",
+                    "token" => "chua co",
+                    "avatar" => "chua co"
+                ]
+            ]);
+        }
+
+
         if ($post->described != null || $post->media != null) {
             $post->save();
         } else if ($post->described != null && $post->media != null) {
@@ -355,9 +345,12 @@ Route::post('/add_post', function (Request $request) {
 });
 
 Route::get('/get_post/{id}', function ($id) {
+    if(!session()->get('data')){
+        return redirect('/');
+    }
     $post = Post::find($id);
     $comments = $post->hasCmts;
-    return view('logged.post.view',['post'=>$post,'comments'=>$comments]);
+    return view('logged.post.view', ['post' => $post, 'comments' => $comments]);
 
 });
 
@@ -401,7 +394,8 @@ Route::post('/get_post', function (Request $request) {
         ],
         "req" => $request->all(),
     ]);
->>>>>>> b522f1ec7b72f0754abc50c7b7b76e509a17be33
+
 });
+
 
 

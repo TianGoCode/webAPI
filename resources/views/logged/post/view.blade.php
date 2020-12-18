@@ -42,8 +42,15 @@
                             class="card-img-top" alt="...">
 
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Cras justo odio</li>
-                            <li class="list-group-item">Dapibus ac facilisis in</li>
+                            <li class="list-group-item">
+                                @if(session()->get('data')->id == $post->author_id)
+                                <a href="/edit_post/{{ $post->id }}">chỉnh sửa bài viết</a>
+                                @else
+                                    <a href="#">chỉnh sửa bài viết</a>
+                                    @endif
+                            </li>
+
+                            <li class="list-group-item">Dapibus ac facilisis in</li><
                             <li class="list-group-item">Vestibulum at eros</li>
                         </ul>
                         <div class="posts-cmt">
