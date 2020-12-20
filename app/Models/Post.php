@@ -16,4 +16,8 @@ class Post extends Model
     public function hasCmts(){
         return $this->hasMany('App\Models\Comment', 'on_post');
     }
+
+    public function hasLikes(){
+        
+    }
 }

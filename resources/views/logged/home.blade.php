@@ -63,8 +63,26 @@
                             class="card-img-top" alt="...">
 
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Cras justo odio</li>
-                            <li class="list-group-item">Dapibus ac facilisis in</li>
+                            <li class="list-group-item">
+                                @if(session()->get('data')->id == $p->author_id)
+                                    <a href="/edit_post/{{ $p->id }}">chỉnh sửa bài viết</a>
+                                @else
+                                    <a href="#">chỉnh sửa bài viết</a>
+                                @endif
+                            </li>
+                            <li class="list-group-item">
+                                <div class="posts-cmt">
+                                    <a>báo cáo</a>
+                                    <form action="/report_post" method="post">
+                                        @csrf
+                                        <input type="hidden" name="token" value="{{ session()->get('token') }}">
+                                        <input type="hidden" name="pid" value="{{ $p->id }}">
+                                        <input type="text" name="subject" placeholder="chủ đề">
+                                        <input type="text" name="details" placeholder="chi tiết">
+                                        <input type="submit" value="báo cáo bài viết">
+                                    </form>
+                                </div>
+                            </li>
                             <li class="list-group-item">Vestibulum at eros</li>
                         </ul>
                         <div class="posts-cmt">
