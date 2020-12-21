@@ -448,6 +448,7 @@ Route::post('/report_post', function (Request $request) {
     ]);
 });
 
+
 Route::post('/like', function (Request $request) {
     $post = Post::find($request->input('id'));
     $credential = User::where('token', session()->get('token'))->first();
@@ -521,182 +522,283 @@ Route::post('/get_comment', function (Request $request) {
 
 
 //api search
-Route::post('/search',function(Request $request){
+Route::post('/search', function (Request $request) {
     $token = $request->input('token');
     $keyword = $request->input('keyword');
     $user_id = $request->input('user_id');
     $index = $request->input('index');
     $count = $request->input('count');
 
-    $credential = User::where('token',$token)->first();
-    $check_user = DB::select('select * from users where id = ?',$user_id);
+    $credential = User::where('token', $token)->first();
+    $check_user = DB::select('select * from users where id = ?', $user_id);
 
 
     $list_post = DB::select('select * from posts');
     $posts = [];
 
-    if($credential != null && $check_user != null && is_string($index) && is_string($count)){
+    if ($credential != null && $check_user != null && is_string($index) && is_string($count)) {
 
         //check xem key co trong described khong
-        for($i = 0; $i < count($list_post); $i++){
+        for ($i = 0; $i < count($list_post); $i++) {
 
             //truong author_id bi loi -tc7
-            if($ck = DB::select('select id from users where id = ?',$list_post[$i]->author_id) == null){
+            if ($ck = DB::select('select id from users where id = ?', $list_post[$i]->author_id) == null) {
                 continue;
             }
             //truong des or media bi loi -tc8
-            if(!is_string($list_post[$i]->described) || !is_string($list_post[$i]->media)){
+            if (!is_string($list_post[$i]->described) || !is_string($list_post[$i]->media)) {
                 continue;
             }
 
-            if(strpos($list_post[$i]->described,$keyword) !== false){
-                $like = DB::select('select user_id from like_post where post_id = ?',$list_post[$i]->id);
-                $cmt = DB::select('select id from comments where on_post = ?',$list_post[$i]->id);
+            if (strpos($list_post[$i]->described, $keyword) !== false) {
+                $like = DB::select('select user_id from like_post where post_id = ?', $list_post[$i]->id);
+                $cmt = DB::select('select id from comments where on_post = ?', $list_post[$i]->id);
                 //dem so like,cmt them vao $list
                 $list_post->like = count($like);
                 $list_post->comment = count($cmt);
-                array_push($posts,$list_post[$i]);
+                array_push($posts, $list_post[$i]);
             }
         }
 
         //khong co kq nao tra ve - tc3
-        if(!empty($posts)){
+        if (!empty($posts)) {
             return response()->json([
-                "code"=>1111,
-                "message"=>"Khong co ket qua nao tra ve",
-                "data"=>$posts,
+                "code" => 1111,
+                "message" => "Khong co ket qua nao tra ve",
+                "data" => $posts,
             ]);
         }
         //tc1
         return response()->json([
-            "code"=>1000,
-            "message"=>"OK",
-            "data"=>$posts,
+            "code" => 1000,
+            "message" => "OK",
+            "data" => $posts,
         ]);
     }
 
     //sai ma token day login -tc2
-    if($credential == null){
+    if ($credential == null) {
         return redirect("/home");
     }
 
     //dung ma phien nhung sai id - tc5
-    if($credential != null && $check_user == null){
+    if ($credential != null && $check_user == null) {
         return response()->json([
-            "code"=>"gi do khong nho :v",
-            "message"=>"Bạn không phải bạn :v",
+            "code" => "gi do khong nho :v",
+            "message" => "Bạn không phải bạn :v",
         ]);
     }
 
     //dung tham so nhung k co tham so keyword -tc6
-    if($keyword == null){
+    if ($keyword == null) {
         return response()->json([
-            "code" =>"Loi tham so",
+            "code" => "Loi tham so",
         ]);
     }
 
     //tham so index va count bi loi - tc14
-    if($index == null || $count == null){
+    if ($index == null || $count == null) {
         return response()->json([
-            "code"=>"lỗi sai giá trị dữ liệu tham số",
-            "message"=>"Tham số index hoặc count bị lỗi"
+            "code" => "lỗi sai giá trị dữ liệu tham số",
+            "message" => "Tham số index hoặc count bị lỗi"
         ]);
     }
 
 });
 
 //get_saved_search
-Route::post('/get_saved_search',function(Request $request){
+Route::post('/get_saved_search', function (Request $request) {
     $token = $request->input('token');
     $index = $request->input('index');
     $count = $request->input('count');
 
     //Khả năng phải tạo thêm 1 table để lưu key word
-    $id_user = DB::select('select id from users where token = ?',$token)[0];
-    $list_keyword = DB::select('select id, keyword,created_at from keyword where author_id = ?',$id_user);
-    $credential =User::where('token',$token)->first();
+    $id_user = DB::select('select id from users where token = ?', $token)[0];
+    $list_keyword = DB::select('select id, keyword,created_at from keyword where author_id = ?', $id_user);
+    $credential = User::where('token', $token)->first();
     //Thanh cong
-    if($token != null && $index != null && $count != null && !empty($list_keyword)){
+    if ($token != null && $index != null && $count != null && !empty($list_keyword)) {
         return response()->json([
-            "code"=>1000,
-            "message"=>"OK",
-            "data"=>$list_keyword,
+            "code" => 1000,
+            "message" => "OK",
+            "data" => $list_keyword,
         ]);
     };
 
     //sai token -tc2
-    if($credential == null){
+    if ($credential == null) {
         return redirect("/home");
     }
 
     //k co gia tri tra ve tc3
-    if(empty($list_keyword)){
+    if (empty($list_keyword)) {
         return response()->json([
-            "code"=>"loi",
-            "message"=>"Khong tim thay ket qua nao",
+            "code" => "loi",
+            "message" => "Khong tim thay ket qua nao",
         ]);
     }
 });
 
 //del_saved_search
-Route::post('/del_saved_search'.function(Request $request){
+Route::post('/del_saved_search', function (Request $request) {
     $token = $request->input('token');
     $search_id = $request->input('search_id');
-    $all = $request -> input('all');
-    $credential =User::where('token',$token)->first();
-    $id_user = DB::select('select id from users where token = ?',$token)[0];
-    $check_sid = DB::select('select id from keyword where id = ?',$search_id);
+    $all = $request->input('all');
+    $credential = User::where('token', $token)->first();
+    $id_user = DB::select('select id from users where token = ?', $token)[0];
+    $check_sid = DB::select('select id from keyword where id = ?', $search_id);
 
     //xoa tat ca
-    if($all == "1" && $credential != null){
+    if ($all == "1" && $credential != null) {
 
         //k co lich su tim kiem -tc8
-        if($check_sid == null){
+        if ($check_sid == null) {
             return response()->json([
-                "code"=>"ma loi",
-                "message"=>"Khong co du lieu tim kiem",
+                "code" => "ma loi",
+                "message" => "Khong co du lieu tim kiem",
             ]);
         };
 
-        DB::delete('delete from users where author_id = ?',$id_user);
+        DB::delete('delete from users where author_id = ?', $id_user);
         return response()->json([
-            "code"=>1000,
-            "message"=>"OK",
+            "code" => 1000,
+            "message" => "OK",
         ]);
     };
 
     //sai phien maybe
-    if($credential == null){
+    if ($credential == null) {
         return redirect("/home");
     }
     //k co search id trong history - tc3
-    if($credential != null && $all == "0"){
+    if ($credential != null && $all == "0") {
 
-        if($check_sid == null){
+        if ($check_sid == null) {
             return response()->json([
-                "code"=>1000,
-                "message"=>"Sai giá trị của dữ liệu tìm kiếm",
+                "code" => 1000,
+                "message" => "Sai giá trị của dữ liệu tìm kiếm",
             ]);
         }
 
         //khong co tham so search_id -tc10
-        if($search_id == null){
+        if ($search_id == null) {
             return response()->json([
-                "code"=>"ma loi tham so k hop le",
-                "message"=>"",
+                "code" => "ma loi tham so k hop le",
+                "message" => "",
             ]);
         }
     }
 
     //search_id la tham so khong hop le -tc5
-    if(is_int($search_id)){
+    if (is_int($search_id)) {
         return response()->json([
-            "code"=>"loi",
-            "message"=>"Tham so khong hop le",
+            "code" => "loi",
+            "message" => "Tham so khong hop le",
         ]);
     }
 });
 
+Route::post('/change_password', function (Request $request) {
+    $currentUser = User::where('token', $request->input('token'))->first();
+    $old = $request->input('password');
+    $new = $request->request('new_password');
+    $userCheckPass = User::where('password', $old)->first();
+
+
+    //token dung nhung nhap sai mat khau cu
+    if ($userCheckPass == null) {
+        return response()->json([
+            "code" => "...",
+            "messsage" => "nhập sai mật khẩu cũ",
+            "data" => $currentUser
+        ]);
+    }
+    if ($currentUser == null) {
+        return redirect('/');
+    }
+
+    $currentUser->password = $new;
+    $currentUser->touch();
+    $currentUser->save();
+    return response()->json([
+        "code" => 1000,
+        "messsage" => "thay đổi mật khẩu thành công",
+        "data" => $currentUser
+    ]);
+});
+
+Route::post('/get_user_info/{id}', function (Request $request, $id) {
+    $currentUser = User::where('token', $request->input('token'))->first();
+    if ($currentUser == null) {
+        return redirect('/');
+    }
+    if ($id == null) {
+        return response()->json([
+            "code" => 1000,
+            "message" => "lấy thông tin người dùng thành công",
+            "data" => [
+                "id" => $currentUser->id,
+                "username" => $currentUser->name,
+                "created" => $currentUser->created_at,
+                "description" => "...",
+                "avatar" => "...",
+                "link" => "/get_user_info/" . $currentUser->id,
+                "address" => "...",
+                "city" => "...",
+                "country" => "...",
+                "listing" => "...",
+                "is_friend" => 0,
+                "online" => 1
+            ]
+        ]);
+    } else {
+        $user = User::find($request->input('user_id'));
+        if($user != null){
+            return response()->json([
+                "code" => 1000,
+                "message" => "lấy thông tin người dùng thành công",
+                "data" => [
+                    "id" => $user->id,
+                    "username" => $user->name,
+                    "created" => $user->created_at,
+                    "description" => "...",
+                    "avatar" => "...",
+                    "link" => "/get_user_info/" . $user->id,
+                    "address" => "...",
+                    "city" => "...",
+                    "country" => "...",
+                    "listing" => "...",
+                    "is_friend" => 0,
+                    "online" => 1
+                ]
+            ]);
+        } else {
+            return response()->json([
+                "code" => 9999,
+                "message" => "lấy thông tin người dùng không thành công",
+                "data" => "null"
+            ]);
+        }
+
+    }
+});
+
+Route::post('/set_user_info',function (Request $request){
+    $currentUser = User::where('token', $request->input('token'))->first();
+
+    if ($currentUser == null) {
+        return redirect('/');
+    }
+    DB::table('user_infos')->insert([
+        'description'=>$request->input('description'),
+        'avatar'=>$request->input('avatar'),
+        'address'=>$request->input('address'),
+        'city'=>$request->input('city'),
+        'country'=>$request->input('country'),
+        'cover_image'=>$request->input('cover_image'),
+        'link'=>'/get_user_info'.$currentUser->id
+    ]);
+});
 
 
 
