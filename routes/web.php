@@ -123,7 +123,11 @@ Route::post('/report_post', [App\Http\Controllers\PostController::class, 'report
 
 Route::post('/like', [App\Http\Controllers\PostController::class, 'like']);
 
-Route::post('/get_comment', [App\Http\Controllers\CommentController::class, 'like']);
+Route::post('/get_comment', [App\Http\Controllers\CommentController::class, 'get_comment']);
+
+Route::post('/set_comment', [App\Http\Controllers\CommentController::class, 'set_comment']);
+
+
 
 
 //api search
@@ -690,67 +694,6 @@ Route::post('get_notification', function (Request $request) {
 });
 
 //set comment - xem lại cho t cái này nữa, chưa hiểu tác dụng của nó lắm - t làm ở dưới là lấy 1 list comment mới về
-Route::post('set_comment', function (Request $request) {
-    $token = $request->input('token');
-    $id_post = $request->input('id');
-    $comment = $request->input('comment');
-    $index = $request->input('index');
-    $count = $request->input('count');
-    $credential = User::where('token', $token)->first();
-    $check_post = DB::select('select id from posts where id = ?', $id_post);
-    $list_comment = [];
 
-
-    $arr_cmt = DB::select('select id, from_user,content,created_at,is_blocked from comments where on_post = ?', $id_post);
-
-    for ($i = $index; $i < ($index + $count); $i++) {
-        $poser = [];
-        $id_user = $arr_cmt[$i]->from_user;
-        //check xem co chan nhau khong -tc9
-        $check_black_user = DB::select('select block_id from black_list where user_id = ? and block_id = ?', [$credential->id, $id_user]);
-        $check_black_cmt = DB::select('select block_id from black_list where user_id = ? and block_id = ?', [$id_user, $credential->id]);
-        if ($check_black_user != null || $check_black_cmt != null) {
-            continue;
-        }
-
-
-        $user = DB::select('select id,name,link_avatar from users where id = ?', $id_user)[0];
-
-        array_push($poser, $user);
-        $arr_cmt[$i]->poser = $poser;
-        array_push($list_comment, $arr_cmt[$i]);
-    }
-
-    //sai phien -tc2
-    if ($credential == null && $token == null) {
-        return redirect('/');
-    }
-
-    //ok-tc1
-    if ($credential != null && is_string($index) && is_string($count)) {
-
-        if ($check_post != null) {
-            //loi db -tc5
-            if (empty($list_comment)) {
-                return response()->json([
-                    "code" => 1001,
-                    "message" => "Không thể kết nối Internet",
-                ]);
-            }
-
-            return response()->json([
-                "code" => 1000,
-                "message" => "OK",
-                "data" => $list_comment,
-            ]);
-        } else {
-            return response()->json([
-                "code" => 9992,
-                "message" => "Bài viết không tồn tại",
-            ]);
-        }
-    }
-
-});
 
 

@@ -19,10 +19,10 @@ class CreatePostsTable extends Migration
             $table->foreign('author_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('described',500)->nullable();
             $table->string('media')->nullable();
-            $table->boolean(is_banned)->nullable();
+            $table->boolean("is_banned")->nullable();
             $table->timestamps();
 
-//            theem bang nguoi dung - thich - bai viet
+
         });
     }
 
