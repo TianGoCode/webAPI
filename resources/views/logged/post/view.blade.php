@@ -70,6 +70,9 @@
                                     <input type="hidden" name="id" value="{{ $post->id }}">
 
                                     <input type="submit" value="like">
+                                    @isset($likes)
+                                        <p>{{$likes}} lượt thích</p>
+                                    @endisset
                                 </form>
                             </li>
                         </ul>
@@ -92,6 +95,19 @@
                                 <input type="hidden" name="comment_author" value="{{ session()->get('data')->id }}">
 
                                 <input type="submit" value="bình luận">
+
+                            </form>
+                        </div>
+                        <div class="posts-cmt">
+                            <form action="/get_comment" method="post">
+                                @csrf
+
+                                <input type="hidden" name="token" value="{{ session()->get('token') }}">
+                                <input type="number" name="count" placeholder="số lượng cmt mỗi trang...">
+                                <input type="hidden" name="id" value="{{ $post->id }}">
+
+                                <input type="submit" value="lấy bình luận">
+
                             </form>
                         </div>
 

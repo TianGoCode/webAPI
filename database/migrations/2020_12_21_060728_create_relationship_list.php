@@ -20,7 +20,6 @@ class CreateRelationshipList extends Migration
             $table->foreign('user_id2')->references('id')->on('users')->onDelete('cascade');
             $table->boolean('is_friends');
             $table->boolean('is_blocked');
-            $table->boolean('is_banned');
             $table->timestamps();
         });
     }

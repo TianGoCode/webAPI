@@ -4,10 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
+
 use Webpatser\Uuid\Uuid;
-use Illuminate\Support\Facades\Hash;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,21 +19,10 @@ use Illuminate\Support\Facades\Hash;
 |
 */
 
-function generateRandomString($length)
-{
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
-}
 
 Route::get('/wel', function () {
     return view('welcome');
 });
-
 
 Route::get('/signup', function () {
     return view('signUp');
@@ -53,161 +41,9 @@ Route::get('/', function () {
 });
 
 
-Route::post('/signup', function (Request $request) {
-    $user = new User();
-    $user->phonenumber = $request->input('phone');
-    $user->password = $request->input('pass');
+Route::post('/signup', [App\Http\Controllers\SignupController::class, 'signup']);
 
-    $phoneNumber = $request->input('phone');
-    $oneNum = substr($phoneNumber, 0, 1);
-
-//    $user->uuid = $request->input('uuid');
-    $duplicate = User::where('phonenumber', $user->phonenumber)->first();
-
-    //kiem tra sdt null
-    if ($request->input('phone') == null) {
-        //neu chua nhap sdt
-        return response()->json([
-            "code" => "error",
-            "message" => "ban chua nhap so dien thoai",
-            "data" => $request->all()
-        ]);
-    }
-
-    //ktra dinh dang
-    if (strlen($phoneNumber) != 10 || $oneNum != '0') {
-        return response()->json([
-            "code" => 1004,
-            "message" => "Sai định dạng số điện thoại",
-            "data" => $request->all()
-        ]);
-    }
-
-    //kiem tra null pass
-    if ($request->input('pass') == null) {
-        // neu chua nhap mk
-        return response()->json([
-            "code" => "error",
-            "message" => "ban chua nhap mat khau",
-            "data" => $request->all()
-        ]);
-    }
-
-    //kiem tra sdt trung mk
-    if ($request->input('phone') == $request->input('pass')) {
-        //neu mk trung sdt
-        return response()->json([
-            "code" => "error",
-            "message" => "ban da nhap sodien thoai trung mat khau",
-            "data" => $request->all(),
-            "user" => $user
-        ]);
-    }
-
-    //kiem tra trung lap
-    if ($duplicate) {
-        if ($duplicate != null) {
-            //kiem tra trung lap sdt
-            return response()->json([
-                "code" => 9996,
-                "message" => "Người dùng đã tồn tại",
-                "data" => $request->all()
-            ]);
-        }
-
-    }
-
-
-    $user->save();
-    return response()->json([
-        "code" => 1000,
-        "message" => "dang ky thanh cong",
-        "data" => $request->all()
-    ]);
-});
-
-Route::post('/login', function (Request $request) {
-    $token = generateRandomString(10);
-    $credentials = User::where('phonenumber', $request->input('phonenumber'))->first();
-    $phonenumber = $request->input('phonenumber');
-    $password = $request->input('password');
-
-    //1, kiem tra phonenumber
-    if ($phonenumber == null) {
-        return response()->json([
-            "code" => 9994,
-            "message" => "chua nhap sdt",
-            "data" => [
-                "id" => "no infomation",
-                "username" => "no infomation",
-                "token" => $request->input('token'),
-                "avatar" => "no infomation"
-            ],
-
-        ]);
-    }
-
-    //sai ding dang sdt: chua lam dc
-    //dung sdt
-    if ($credentials != null) {
-        //mat khau de trong
-        if ($request->input('password') == null) {
-            return response()->json([
-                "code" => 9994,
-                "message" => "chua nhap mat khau",
-                "data" => [
-                    "id" => "no infomation",
-                    "username" => "no infomation",
-                    "token" => "no infomation",
-                    "avatar" => "no infomation"
-                ],
-
-            ]);
-        } else if ($password != $credentials->password) {
-            //sai mat khau tai khoan
-            return response()->json([
-                "code" => 9994,
-                "message" => "nhap sai mat khau",
-                "data" => [
-                    "id" => "no infomation",
-                    "username" => $phonenumber,
-                    "token" => "no infomation",
-                    "avatar" => "no infomation"
-                ]
-
-            ]);
-        } else {
-            $credentials->token = $token;
-            $credentials->save();
-            session([
-                'data' => $credentials,
-                'token' => $token
-            ]);
-            return response()->json([
-                "code" => 1000,
-                "message" => "ban da dang nhap thanh cong",
-                "data" => [
-                    "id" => $credentials->id,
-                    "username" => "chua co",
-                    "token" => $token,
-                    "avatar" => "chua co"
-                ],
-            ]);
-        }
-    } else {
-        return response()->json([
-            "code" => 9996,
-            "message" => "tai khoan khong ton tai",
-            "data" => [
-                "id" => "no infomation",
-                "username" => "chua co",
-                "token" => "chua co",
-                "avatar" => "chua co"
-            ]
-        ]);
-    }
-
-});
+Route::post('/login', [App\Http\Controllers\LoginController::class, 'login']);
 
 Route::get('/home', function () {
     $sessionToken = session()->get('token'); // token phien dang nhap
@@ -241,107 +77,20 @@ Route::get('/home', function () {
 
 });
 
-Route::post('/logout', function (Request $request) {
-    $credential = User::where('token', session()->get('token'))->first();
-
-    session()->pull('data');
-    session()->pull('token');
-
-    //xoa token server
-    $credential->token = null;
-    $credential->save();
-    return response()->json([
-        "code" => 1000,
-        "message" => "dang xuat thanh cong"
-    ]);
-});
+Route::post('/logout', [App\Http\Controllers\HomeController::class, 'logout']);
 
 Route::get('/change_info_after_signup', function () {
-    return view('logged.change_info');
-});
-
-Route::post('/change_info_after_signup', function (Request $request) {
-    $user = User::where('token', $request->token)->first();
-
-    if ($user == null) {
-        //khong ton tai user tuc la token dang khong duoc dung
-        return redirect('/');
-    } else {
-        if ($request->input(['username'])) {
-            $user->name = $request->input(['username']);
-            if ($request->input(['avatar'])) {
-                $user->avatar = $request->input(['avatar']);
-            }
-            $user->touch();
-            $user->save();
-            session()->put("data", $user);
-            return response()->json([
-                "code" => 1000,
-                "message" => "cap nhat thong tin thanh cong",
-                "data" => [
-                    "id" => $user->id,
-                    "username" => $user->name,
-                    "phonenumber" => $user->phonenumber,
-                    "created" => $user->created_at,
-                    "avatar" => $user->avatar
-                ]
-            ]);
-        } else {
-            return response()->json([
-                "code" => 1004,
-                "message" => "username khong hop le"
-            ]);
-        }
+    $user = User::where('token', session()->get('token'))->where('name', null)->first();
+    if ($user) {
+        return view('logged.change_info');
     }
-//    if($request->token != $user->token){
-//        return response()->json([
-//           "code"=>1004,
-//           "message"=>"ma token sai hoac thieu" ,
-//        ]);
-//    }
+    return redirect('/');
 
 });
 
-Route::post('/add_post', function (Request $request) {
-    $credential = User::where('token', session()->get('token'))->first();
-    if ($credential) {
-        $post = new Post();
-        $post->described = $request->input('described');
-        $post->author_id = $credential->id;
-        $post->media = $request->input('image');
+Route::post('/change_info_after_signup', [App\Http\Controllers\SignupController::class, 'change_info_after_signup']);
 
-
-        if ($post->described != null || $post->media != null) {
-            $post->save();
-        } else if ($post->described == null && $post->media == null) {
-            return response()->json([
-                "code" => "???",
-                "message" => "khong co gi de dang ca",
-                "data" => [
-                    "id" => "...",
-                    "url" => "..."
-                ]
-            ]);
-        }
-
-        $latest = Post::where('author_id', $credential->id)->latest()->first();
-        return response()->json([
-            "code" => 1000,
-            "message" => "dang bai thanh cong",
-            "data" => [
-                "id" => $latest->id,
-                "url" => "https://127.0.0.1/" . $latest->id
-            ]
-        ]);
-    } else {
-        return response()->json([
-            "code" => 9999,
-            "message" => "dang bai k thanh cong dang nhap lai",
-            "data" => $request->all()
-        ]);
-    }
-
-});
+Route::post('/add_post', [App\Http\Controllers\PostController::class, 'add_post']);
 
 Route::get('/get_post/{id}', function ($id) {
     if (!session()->get('data')) {
@@ -349,50 +98,11 @@ Route::get('/get_post/{id}', function ($id) {
     }
     $post = Post::find($id);
     $comments = $post->hasCmts;
-    return view('logged.post.view', ['post' => $post, 'comments' => $comments]);
+    $likes = DB::table('like_post')->select('*')->where('post_id', '=', $post->id)->get();
+    return view('logged.post.view', ['post' => $post, 'comments' => $comments, 'likes' => sizeof($likes)]);
 });
 
-Route::post('/get_post', function (Request $request) {
-    $post = Post::find($request->input('pid'));
-    $user = User::find($post->author_id);
-    $currentUser = User::where('token', session()->get("token"))->first();
-    $comments = $post->hasCmts;
-
-    if (!$currentUser) {
-        return redirect('/');
-    }
-
-    return response()->json([
-        "code" => 1000,
-        "message" => "lay bai viet thanh cong",
-        "data" => [
-            "id" => $post->id,
-            "described" => $post->described,
-            "modified" => $post->updated_at,
-            "like" => '',
-            "comments" => sizeof($comments),
-            "is_liked" => "",
-            "images" => "",
-            "videos" => "",
-            "author" => [
-                "id" => $user->id,
-                "username" => $user->name,
-                "avatar" => $user->avatar,
-                "is_online" => "1",
-            ],
-
-            "state" => "1",
-            "is_blocked" => "0",
-            "can_edit" => "1",
-            "banned" => "0",
-            "url" => "localhost:8000/get_post/" . $post->id,
-            "messages" => "",
-            "can_comment" => "1"
-        ],
-        "req" => $request->all(),
-    ]);
-
-});
+Route::post('/get_post', [App\Http\Controllers\PostController::class, 'get_post']);
 
 Route::get('/edit_post/{id}', function ($id) {
     $currentUser = User::where('token', session()->get("token"))->first();
@@ -405,120 +115,15 @@ Route::get('/edit_post/{id}', function ($id) {
     return view('logged.post.edit', ['post' => $post]);
 });
 
-Route::post('/edit_post', function (Request $request) {
-    $post = Post::find($request->input('id'));
+Route::post('/edit_post', [App\Http\Controllers\PostController::class, 'edit_post']);
 
-    $currentUser = User::where('token', session()->get("token"))->first();
-    if (!$currentUser) {
-        return redirect('/');
-    }
+Route::post('/delete_post', [App\Http\Controllers\PostController::class, 'delete_post']);
 
-    $post->described = $request->input('described');
-    $post->touch();
-    $post->save();
-    return response()->json([
-        "code" => 1000,
-        "message" => "chinh sua bai thanh cong"
-    ]);
-});
+Route::post('/report_post', [App\Http\Controllers\PostController::class, 'report_post']);
 
-Route::post('/delete_post', function (Request $request) {
-    $post = Post::find($request->input('id'));
-    $currentUser = User::where('token', session()->get("token"))->first();
-    if (!$currentUser) {
-        return redirect('/');
-    }
-    $post->delete();
-    return response()->json([
-        "code" => 1000,
-        "message" => "xoa bai thanh cong"
-    ]);
-});
+Route::post('/like', [App\Http\Controllers\PostController::class, 'like']);
 
-Route::post('/report_post', function (Request $request) {
-    $post = Post::find($request->input('id'));
-    $currentUser = User::where('token', session()->get("token"))->first();
-    if (!$currentUser) {
-        return redirect('/');
-    }
-
-    return response()->json([
-        "code" => 1000,
-        "message" => "bai viet da duoc bao cao"
-    ]);
-});
-
-
-Route::post('/like', function (Request $request) {
-    $post = Post::find($request->input('id'));
-    $credential = User::where('token', session()->get('token'))->first();
-    $likes = $post->hasLikes;
-    //tc2-sai token
-    if ($credential == null) {
-        return redirect('/home');
-    }
-
-    if ($post != null && $credential != null) {
-        //sai tieu chuan hoac quoc gia
-        if ($post->banned == 1 || $post->banned == 2) {
-            return response()->json([
-                "code" => 1010,
-                "message" => "Bai viet da bi xoa",
-            ]);
-            //xoa bai viet
-        }
-
-
-        //tc1-ok
-        return response()->json([
-            "code" => 1000,
-            "message" => "OK",
-            "data" => [
-                "like" => sizeof($likes),
-            ]
-        ]);
-    }
-    //tc6-dung ma phien , sai id bai viet
-    if ($post == null && $credential != null) {
-        return response()->json([
-            'code' => 9992,
-            'message' => 'Bai viet khong ton tai',
-            'data' => null
-        ]);
-    }
-
-});
-
-Route::post('/get_comment', function (Request $request) {
-    $credential = User::where('token', session()->get('token'))->first();
-    $post = Post::find($request->input('pid'));
-    //chua co model table comment
-    $onPost = onPost::find($request->input('pid'));
-    $index = $request->input('index');
-    $count = $request->input('count');
-
-    //dung tat ok
-    if ($credential != null && $post != null && $index == true && $count == true) {
-        return response()->json([
-            "code" => 1000,
-            "message" => "OK",
-            "data" => [
-                "id" => $onPost->on_post,
-                "comment" => $onPost->content,
-                "created" => $onPost->created_at,
-                "poster" => [
-                    "id" => $onPost->from_user,
-                    "name" => "",
-                    "avatar" => ""
-                ]
-            ]
-        ]);
-    }
-
-    if ($credential == null) {
-        return redirect("home");
-    }
-});
+Route::post('/get_comment', [App\Http\Controllers\CommentController::class, 'like']);
 
 
 //api search
@@ -753,7 +358,7 @@ Route::post('/get_user_info/{id}', function (Request $request, $id) {
         ]);
     } else {
         $user = User::find($request->input('user_id'));
-        if($user != null){
+        if ($user != null) {
             return response()->json([
                 "code" => 1000,
                 "message" => "lấy thông tin người dùng thành công",
@@ -783,23 +388,369 @@ Route::post('/get_user_info/{id}', function (Request $request, $id) {
     }
 });
 
-Route::post('/set_user_info',function (Request $request){
+Route::post('/set_user_info', function (Request $request) {
     $currentUser = User::where('token', $request->input('token'))->first();
 
     if ($currentUser == null) {
         return redirect('/');
     }
     DB::table('user_infos')->insert([
-        'description'=>$request->input('description'),
-        'avatar'=>$request->input('avatar'),
-        'address'=>$request->input('address'),
-        'city'=>$request->input('city'),
-        'country'=>$request->input('country'),
-        'cover_image'=>$request->input('cover_image'),
-        'link'=>'/get_user_info'.$currentUser->id
+        'description' => $request->input('description'),
+        'avatar' => $request->input('avatar'),
+        'address' => $request->input('address'),
+        'city' => $request->input('city'),
+        'country' => $request->input('country'),
+        'cover_image' => $request->input('cover_image'),
+        'link' => '/get_user_info' . $currentUser->id
     ]);
 });
 
+//set_accept_friend
+Route::post('/set_accept_friend', function (Request $request) {
+    $token = $request->input('token');
+    $user_id = $request->input('user_id');
+    $is_accept = $request->input('is_accept');
+    $currentUser = User::where('token', $request->input('token'))->first();
+    $check_user = DB::select('select id form users where id = ?', $user_id);
 
+    if ($token != null && $user_id != null && $is_accept != null) {
+
+        //user_id k phai 0 hoac 1 -tcc8
+        if ($is_accept != 0 || $is_accept != 1) {
+            return response()->json([
+                "code" => 1004,
+                "message" => "Dữ liệu truyền vào không hợp lệ",
+            ]);
+        }
+
+        return response()->json([
+            "code" => 1000,
+            "message" => "OK",
+        ]);
+    }
+
+    if ($currentUser == null) {
+        return redirect('/');
+    }
+    //k co tham so user id hoc k chuan -tc5
+    if ($user_id == null && is_string($user_id) && $currentUser != null) {
+        return response()->json([
+            "code" => "1003",
+            "message" => "Kiểu tham số không đúng đắn",
+        ]);
+    }
+    //Neu nguoi dung k ton tai -tc6
+    if ($check_user == null) {
+        return response()->json([
+            "code" => 9995,
+            "message" => "Người dùng không tồi tại",
+        ]);
+    }
+});
+
+//Get_list_suggested_friends
+Route::post('/get_list_suggested_friends', function () {
+    $token = $request->input('token');
+    $index = $request->input('index');
+    $count = $request->input('count');
+    $currentUser = User::where('token', $request->input('token'))->first();
+    $id_user = $currentUser->id;
+    $list_user = DB::select('select * from users where id != ?', $id_user);
+
+    //ok -tc1
+    if ($currentUser != null && is_string($index) && is_string($index) && is_string($count)) {
+        return response()->json([
+            "code" => 1000,
+            "message" => "OK",
+            "data" => $list_user,
+        ]);
+    }
+
+//sai mã phiên đăng nhập -tc2
+    if ($token == null && is_string($token)) {
+        return redirect('/');
+    }
+
+    if ($currentUser != null && $index == null && $count == null && is_string($index) && is_string($count)) {
+        return response()->json([
+            "code" => 1004,
+            "message" => "Lỗi tham số không hợp lệ",
+        ]);
+    }
+
+});
+
+//set request friend - chưa xong chưa biết lấy ở đâu
+Route::post('/get_request friend', function () {
+    $token = $request->input('token');
+    $user_id = $request->input('user_id');
+    $credential = User::where('token', $token)->first();
+    $requested_friends = 0;
+
+    if ($credential != null && $user_id != null) {
+
+        //không tìm thấy ng dùng -tc5
+        if (User::where('id', $user_id)->first() == null) {
+            return response()->json([
+                "code" => 9995,
+                "message" => "Không có người dùng này",
+            ]);
+        }
+
+        //Truyền đúng tham số nhưng id = id chính tk -tc6
+        if ($credential->id == $user_id) {
+            return response()->json([
+                "code" => 1003,
+                "message" => "Chính là bạn"
+            ]);
+        }
+
+        //requested friends k phải số hoặc âm -tc7
+        if (!is_int($requested_friends)) {
+            return response()->json([
+                "code" => 1000,
+                "message" => "OK",
+                "data" => 0,
+            ]);
+        }
+
+        return response()->json([
+            "code" => 1000,
+            "message" => "OK",
+            "data" => $requested_friends,
+        ]);
+    }
+
+    if ($credential == null) {
+        return redirect('/');
+    }
+
+
+});
+
+//get_list_blocks
+Route::post('get_list_blocks', function (Request $request) {
+    $token = $request->input('token');
+    $index = $request->input('index');
+    $count = $request->input('count');
+    $credential = User::post('token', $token)->first();
+    $user_id = $credential->id;
+    $block_list = DB::select('select block_id from black_list where user_id = ?', $user_id);
+    $data = [];
+
+    //sai mã phiên -tc2
+    if ($token == null || $credential == null) {
+        return redirect('/');
+    }
+
+    //ok
+    if ($credential != null && $block_list != null) {
+
+        //k có tham sô index và count -tc5
+        if ($index == null || $count == null || !is_int($index) || !is_int($count)) {
+            return response()->json([
+                "code" => 1004,
+                "message" => "Giá trị tham số không hợp lệ"
+            ]);
+        }
+
+        //them nam,avatar vao data
+        for ($i = 0; $i < count($block_list); $i++) {
+            $user = User::where('id', $block_list[$i])->first();
+            $block_list[$i]->name = $user->name;
+            $block_list[$i]->avatar = $user->link_avatar;
+            array_push($data, $block_list[$i]);
+
+            return response()->json([
+                "code" => 1000,
+                "message" => "OK",
+                "data" => $data
+            ]);
+        }
+    }
+
+});
+
+//Get_push_settings - lại phải tạo thêm table setting rồi
+Route::post('/get_push_settings', function (Request $request) {
+    $token = $request->input('token');
+    $credential = User::where('token', $token)->first();
+    //lấy data từ settings -chưa có
+    $data_settings = [];
+
+    if ($credential) {
+
+        //nếu ng dùng chưa có trong table này thì thiết lập 1 cả -tc7
+        if (abc) {
+            return response()->json([
+                "code" => 1000,
+                "message" => "Thiết lập lần đầu",
+                "data" => [
+                    "like_comment" => 1,
+                    "from_friends" => 1,
+                    "requested_friend" => 1,
+                    "suggested_friend" => 1,
+                    "birthday" => 1,
+                    "video" => 1,
+                    "report" => 1,
+                    "sound_on" => 1,
+                    "notification_on" => 1,
+                    "vibrant_on" => 1,
+                    "led_on" => 1,
+                ]
+            ]);
+        }
+
+        return response()->json([
+            "code" => 1000,
+            "message" => "OK",
+            "data" => $data_settings,
+        ]);
+    }
+
+    if ($credential != null && $token != null) {
+        return redirect('/');
+    }
+
+});
+
+//set_push_settings - khó hiểu k làm
+Route::post('set_push_settings', function (Request $request) {
+
+});
+
+
+//set block
+Route::post('set_block', function (Request $request) {
+    $token = $request->input('token');
+    $user_id = $request->input('user_id');
+    $type = $request->input('type');
+    $credential = User::post('token', $token)->first();
+    $check_user = User::find('id', $user_id);
+
+    //Dữ liệu trong table xem đang chặn hay không chặn
+    $check_band = '';
+
+    if ($credential != null && ($type == 0 || $type == 1)) {
+
+        //chinh la chu tk -tc5
+        if ($check_user->id == $credential->id) {
+            return response()->json([
+                "code" => "loi",
+                "message" => "Ta là ta"
+            ]);
+        }
+
+        //ng bi chan khong ton tai -tc6
+        if ($check_user == null) {
+            return response()->json([
+                "code" => "loi",
+                "message" => "NGười dùng không tồn lại",
+            ]);
+        }
+
+        //ok
+        if ($check_user != null) {
+
+            //di chan 1 nguoi chua bao gio chan or bo chan -tc9
+            if ($type == $check_band) {
+                return response()->json([
+                    "code" => 1003,
+                    "message" => "Chưa chặn người dùng này hoặc chưa đã chặn",
+                ]);
+            }
+
+
+            return response()->json([
+                "code" => 1000,
+                "message" => "OK",
+            ]);
+        }
+    }
+
+    //sai phien -tc2
+    if ($credential == null && $token == null) {
+        return redirect('/');
+    }
+});
+
+//check new version
+Route::post('check_new_version', function () {
+    //Khó quá - bỏ :D
+});
+
+//get notification
+Route::post('get_notification', function (Request $request) {
+    $token = $request->input('token');
+    $index = $request->input('index');
+    $count = $request->input('count');
+    $credential = User::where('token', $token)->first();
+
+
+});
+
+//set comment - xem lại cho t cái này nữa, chưa hiểu tác dụng của nó lắm - t làm ở dưới là lấy 1 list comment mới về
+Route::post('set_comment', function (Request $request) {
+    $token = $request->input('token');
+    $id_post = $request->input('id');
+    $comment = $request->input('comment');
+    $index = $request->input('index');
+    $count = $request->input('count');
+    $credential = User::where('token', $token)->first();
+    $check_post = DB::select('select id from posts where id = ?', $id_post);
+    $list_comment = [];
+
+
+    $arr_cmt = DB::select('select id, from_user,content,created_at,is_blocked from comments where on_post = ?', $id_post);
+
+    for ($i = $index; $i < ($index + $count); $i++) {
+        $poser = [];
+        $id_user = $arr_cmt[$i]->from_user;
+        //check xem co chan nhau khong -tc9
+        $check_black_user = DB::select('select block_id from black_list where user_id = ? and block_id = ?', [$credential->id, $id_user]);
+        $check_black_cmt = DB::select('select block_id from black_list where user_id = ? and block_id = ?', [$id_user, $credential->id]);
+        if ($check_black_user != null || $check_black_cmt != null) {
+            continue;
+        }
+
+
+        $user = DB::select('select id,name,link_avatar from users where id = ?', $id_user)[0];
+
+        array_push($poser, $user);
+        $arr_cmt[$i]->poser = $poser;
+        array_push($list_comment, $arr_cmt[$i]);
+    }
+
+    //sai phien -tc2
+    if ($credential == null && $token == null) {
+        return redirect('/');
+    }
+
+    //ok-tc1
+    if ($credential != null && is_string($index) && is_string($count)) {
+
+        if ($check_post != null) {
+            //loi db -tc5
+            if (empty($list_comment)) {
+                return response()->json([
+                    "code" => 1001,
+                    "message" => "Không thể kết nối Internet",
+                ]);
+            }
+
+            return response()->json([
+                "code" => 1000,
+                "message" => "OK",
+                "data" => $list_comment,
+            ]);
+        } else {
+            return response()->json([
+                "code" => 9992,
+                "message" => "Bài viết không tồn tại",
+            ]);
+        }
+    }
+
+});
 
 

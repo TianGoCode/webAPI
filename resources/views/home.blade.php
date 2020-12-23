@@ -53,6 +53,7 @@
                     <input type="password" name="pass" placeholder="Password"/>
 
                 </div>
+
                 <input type="submit" class="btn" value="Sign up"/>
                 <input type="hidden" name="uuid" class="form-control">
 
