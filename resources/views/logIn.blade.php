@@ -14,7 +14,7 @@
 <div class="headerMenu">
     <div id="wrapper">
         <div class="logo">
-        
+
         </div>
         <div class="searchbox">
             <form action="search" method="GET" id="search">
@@ -37,20 +37,23 @@
         </td>
         <td width="40%" valign="top">
             <h2>đăng nhập</h2>
-            <form action="/login" method="post">
+            <form action="/anh" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">phone</label>
-                    <input type="text" name="phoneIn" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <input type="text" name="phone" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                 </div>
                 <div class="mb-3">
                     <label for="exampleInputPassword1" class="form-label">Password</label>
-                    <input type="password" name="passIn" class="form-control" id="exampleInputPassword1">
+                    <input type="password" name="pass" class="form-control" id="exampleInputPassword1">
                 </div>
                 <div class="mb-3">
 
                     <input type="hidden" id="qqq" name="uuid" class="form-control" >
+
+
+                    <input type="file" name="image" accept="image/*">
                 </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -58,5 +61,7 @@
         </td>
     </tr>
 </table>
+<img src="{{ asset('storage/user1/avatar/RKcS794qNW2M3IfVCwug5NgppVKot7fAgjB4ufHX.jpg') }}" alt="" srcset="" width="100px" height="100px">
+
 </body>
 </html>

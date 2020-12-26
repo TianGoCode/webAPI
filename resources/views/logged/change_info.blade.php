@@ -9,16 +9,15 @@
 @section('content')
     <div class="container-fluid">
 
-        <form action="/change_info_after_signup" method="post">
+        <form action="/change_info_after_signup" method="post" enctype="multipart/form-data">
             @csrf
-
             <div class="mb-3">
                 <label class="form-label">Tên: </label>
                 <input type="text" name="username" id="" placeholder="chon username">
             </div>
             <div class="mb-3">
                 <label class="form-label">Upload avatar: </label>
-                <input type="file" name="avatar">
+                <input type="file" name="avatar" accept="image/*">
             </div>
             <input type="hidden" name="token" value="{{ session()->get('data')->token }}">
             <div class="col-auto">

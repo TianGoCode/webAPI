@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
-
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Webpatser\Uuid\Uuid;
 
 
@@ -19,6 +20,17 @@ use Webpatser\Uuid\Uuid;
 |
 */
 
+
+Route::view('/anh', 'logIn');
+Route::post('/anh', function (Request $request) {
+    $user = new User();
+    $path = $request->file('image')->store('public');
+
+    return response()->json([
+        "data"=>$request->all(),
+        "link"=>$path
+    ]);
+});
 
 Route::get('/wel', function () {
     return view('welcome');
@@ -127,126 +139,9 @@ Route::post('/get_comment', [App\Http\Controllers\CommentController::class, 'get
 
 Route::post('/set_comment', [App\Http\Controllers\CommentController::class, 'set_comment']);
 
+Route::post('/search', [App\Http\Controllers\PostController::class, 'report_post']);
 
-
-
-//api search
-Route::post('/search', function (Request $request) {
-    $token = $request->input('token');
-    $keyword = $request->input('keyword');
-    $user_id = $request->input('user_id');
-    $index = $request->input('index');
-    $count = $request->input('count');
-
-    $credential = User::where('token', $token)->first();
-    $check_user = DB::select('select * from users where id = ?', $user_id);
-
-
-    $list_post = DB::select('select * from posts');
-    $posts = [];
-
-    if ($credential != null && $check_user != null && is_string($index) && is_string($count)) {
-
-        //check xem key co trong described khong
-        for ($i = 0; $i < count($list_post); $i++) {
-
-            //truong author_id bi loi -tc7
-            if ($ck = DB::select('select id from users where id = ?', $list_post[$i]->author_id) == null) {
-                continue;
-            }
-            //truong des or media bi loi -tc8
-            if (!is_string($list_post[$i]->described) || !is_string($list_post[$i]->media)) {
-                continue;
-            }
-
-            if (strpos($list_post[$i]->described, $keyword) !== false) {
-                $like = DB::select('select user_id from like_post where post_id = ?', $list_post[$i]->id);
-                $cmt = DB::select('select id from comments where on_post = ?', $list_post[$i]->id);
-                //dem so like,cmt them vao $list
-                $list_post->like = count($like);
-                $list_post->comment = count($cmt);
-                array_push($posts, $list_post[$i]);
-            }
-        }
-
-        //khong co kq nao tra ve - tc3
-        if (!empty($posts)) {
-            return response()->json([
-                "code" => 1111,
-                "message" => "Khong co ket qua nao tra ve",
-                "data" => $posts,
-            ]);
-        }
-        //tc1
-        return response()->json([
-            "code" => 1000,
-            "message" => "OK",
-            "data" => $posts,
-        ]);
-    }
-
-    //sai ma token day login -tc2
-    if ($credential == null) {
-        return redirect("/home");
-    }
-
-    //dung ma phien nhung sai id - tc5
-    if ($credential != null && $check_user == null) {
-        return response()->json([
-            "code" => "gi do khong nho :v",
-            "message" => "Bạn không phải bạn :v",
-        ]);
-    }
-
-    //dung tham so nhung k co tham so keyword -tc6
-    if ($keyword == null) {
-        return response()->json([
-            "code" => "Loi tham so",
-        ]);
-    }
-
-    //tham so index va count bi loi - tc14
-    if ($index == null || $count == null) {
-        return response()->json([
-            "code" => "lỗi sai giá trị dữ liệu tham số",
-            "message" => "Tham số index hoặc count bị lỗi"
-        ]);
-    }
-
-});
-
-//get_saved_search
-Route::post('/get_saved_search', function (Request $request) {
-    $token = $request->input('token');
-    $index = $request->input('index');
-    $count = $request->input('count');
-
-    //Khả năng phải tạo thêm 1 table để lưu key word
-    $id_user = DB::select('select id from users where token = ?', $token)[0];
-    $list_keyword = DB::select('select id, keyword,created_at from keyword where author_id = ?', $id_user);
-    $credential = User::where('token', $token)->first();
-    //Thanh cong
-    if ($token != null && $index != null && $count != null && !empty($list_keyword)) {
-        return response()->json([
-            "code" => 1000,
-            "message" => "OK",
-            "data" => $list_keyword,
-        ]);
-    };
-
-    //sai token -tc2
-    if ($credential == null) {
-        return redirect("/home");
-    }
-
-    //k co gia tri tra ve tc3
-    if (empty($list_keyword)) {
-        return response()->json([
-            "code" => "loi",
-            "message" => "Khong tim thay ket qua nao",
-        ]);
-    }
-});
+Route::post('/get_saved_search', [App\Http\Controllers\PostController::class, 'get_saved_search']);
 
 //del_saved_search
 Route::post('/del_saved_search', function (Request $request) {
@@ -254,8 +149,13 @@ Route::post('/del_saved_search', function (Request $request) {
     $search_id = $request->input('search_id');
     $all = $request->input('all');
     $credential = User::where('token', $token)->first();
-    $id_user = DB::select('select id from users where token = ?', $token)[0];
+    $id_user = DB::select('select id from users where token = ?', $token)->first();
     $check_sid = DB::select('select id from keyword where id = ?', $search_id);
+
+    //sai phien 
+    if ($credential == null) {
+        return redirect("/");
+    }
 
     //xoa tat ca
     if ($all == "1" && $credential != null) {
@@ -275,10 +175,7 @@ Route::post('/del_saved_search', function (Request $request) {
         ]);
     };
 
-    //sai phien maybe
-    if ($credential == null) {
-        return redirect("/home");
-    }
+
     //k co search id trong history - tc3
     if ($credential != null && $all == "0") {
 

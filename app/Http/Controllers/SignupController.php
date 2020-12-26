@@ -92,8 +92,8 @@ class SignupController extends Controller
         } else {
             if ($request->input(['username'])) {
                 $user->name = $request->input(['username']);
-                if ($request->input(['avatar'])) {
-                    $user->avatar = $request->input(['avatar']);
+                if ($request->file('avatar')) {
+                    $user->link_avatar = $request->file('avatar')->store('public/user'.$user->id.'/avatar');
                 }
                 $user->touch();
                 $user->save();
@@ -106,7 +106,7 @@ class SignupController extends Controller
                         "username" => $user->name,
                         "phonenumber" => $user->phonenumber,
                         "created" => $user->created_at,
-                        "avatar" => $user->avatar
+                        "link_avatar" => $user->link_avatar
                     ]
                 ]);
             } else {
@@ -116,12 +116,7 @@ class SignupController extends Controller
                 ]);
             }
         }
-//    if($request->token != $user->token){
-//        return response()->json([
-//           "code"=>1004,
-//           "message"=>"ma token sai hoac thieu" ,
-//        ]);
-//    }
+
 
     }
 

@@ -18,8 +18,9 @@ class CreateRelationshipList extends Migration
             $table->foreign('user_id1')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('user_id2');
             $table->foreign('user_id2')->references('id')->on('users')->onDelete('cascade');
-            $table->boolean('is_friends');
-            $table->boolean('is_blocked');
+            $table->boolean('is_reqesting')->nullable();
+            $table->boolean('is_friends')->nullable();
+            $table->boolean('is_blocked')->nullable();
             $table->timestamps();
         });
     }
