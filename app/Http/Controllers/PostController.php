@@ -351,4 +351,64 @@ class PostController extends Controller
             ]);
         }
     }
+
+    public function del_saved_search(Request $request) {
+        $token = $request->input('token');
+        $search_id = $request->input('search_id');
+        $all = $request->input('all');
+        $credential = User::where('token', $token)->first();
+        $id_user = User::where('token', $token)->first();
+        $check_sid = DB::select('select id from keyword where id = ?', $search_id);
+
+        //sai phien dang nhap
+        if ($credential == null) {
+            return redirect("/");
+        }
+
+        //xoa tat ca
+        if ($all == "1" && $credential != null) {
+
+            //k co lich su tim kiem -tc8
+            if ($check_sid == null) {
+                return response()->json([
+                    "code" => 9994,
+                    "message" => "Khong co du lieu tim kiem",
+                ]);
+            };
+
+            DB::delete('delete from users where author_id = ?', $id_user);
+            return response()->json([
+                "code" => 1000,
+                "message" => "OK",
+            ]);
+        };
+
+
+        //k co search id trong history - tc3
+        if ($credential != null && $all == "0") {
+
+            if ($check_sid == null) {
+                return response()->json([
+                    "code" => 9994,
+                    "message" => "Sai giá trị của dữ liệu tìm kiếm",
+                ]);
+            }
+
+            //khong co tham so search_id -tc10
+            if ($search_id == null) {
+                return response()->json([
+                    "code" => 9994,
+                    "message" => "tham số không hợp lệ",
+                ]);
+            }
+        }
+
+        //search_id la tham so khong hop le -tc5
+        if (is_int($search_id)) {
+            return response()->json([
+                "code" => 9997,
+                "message" => "Ttham số không hợp lệ",
+            ]);
+        }
+    }
 }

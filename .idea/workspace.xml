@@ -20,15 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b2c5e89-6c72-4fb7-a3ac-3eb1ca9abd64" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/database/migrations/2020_12_24_054232_create_report_post.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/migrations/2020_12_26_091016_create_keyword_table.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PostController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PostController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SignupController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SignupController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_12_02_042637_create_like_post_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_12_02_042637_create_like_post_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_12_21_060728_create_relationship_list.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_12_21_060728_create_relationship_list.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/logIn.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/logIn.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/logged/change_info.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/logged/change_info.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layout/layout.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layout/layout.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/logged/home.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/logged/home.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/logged/post/view.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/logged/post/view.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
@@ -240,7 +236,10 @@
       <workItem from="1608786127343" duration="1327000" />
       <workItem from="1608795617904" duration="2049000" />
       <workItem from="1608905405702" duration="1347000" />
-      <workItem from="1608945380157" duration="4008000" />
+      <workItem from="1608945380157" duration="9801000" />
+      <workItem from="1609056039717" duration="2012000" />
+      <workItem from="1609079044692" duration="6380000" />
+      <workItem from="1609116025399" duration="5121000" />
     </task>
     <servers />
   </component>
@@ -287,6 +286,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1607007416492" />
+    <state x="667" y="253" width="585" height="534" key="find.popup" timestamp="1609079434209">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="667" y="253" width="585" height="534" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1609079434209" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1608195986671">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

@@ -24,6 +24,7 @@
         .feed-comment {
             border: 1px solid black;
         }
+
     </style>
 @endsection
 @section('content')

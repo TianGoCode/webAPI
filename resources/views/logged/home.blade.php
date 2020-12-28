@@ -20,6 +20,7 @@
             background: #fff;
             border-radius: 5px;
         }
+
     </style>
 @endsection
 @section('content')

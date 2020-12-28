@@ -61,7 +61,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link link text-black display-4" >
-                            <input class="form-control mr-sm-2" type="text" placeholder="Tìm kiếm gì đó..."
+                            <input class="form-control mr-sm-1" type="text" placeholder="Tìm kiếm gì đó..."
                                    aria-label="Search">
                         </a>
                     </li>
